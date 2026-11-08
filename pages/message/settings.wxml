@@ -1,0 +1,50 @@
+<!-- 聊天设置页 -->
+<view class="settings-page">
+  <!-- 自定义导航栏 -->
+  <view class="s-navbar" style="padding-top:{{statusBarHeight}}px;height:{{statusBarHeight + navBarHeight}}px">
+    <view class="s-nav-body" style="height:{{navBarHeight}}px">
+      <view class="s-nav-left" bindtap="goBack">
+        <van-icon name="arrow-left" size="40rpx" color="#333"/>
+      </view>
+      <view class="s-nav-center">
+        <text class="s-nav-title">聊天设置</text>
+      </view>
+      <view class="s-nav-right"></view>
+    </view>
+  </view>
+
+  <!-- 用户信息卡片 -->
+  <view class="s-user-card">
+    <view class="s-avatar">
+      <text class="s-avatar-text">{{chatTarget.name[0] || '?'}}</text>
+    </view>
+    <text class="s-user-name">{{chatTarget.name}}</text>
+  </view>
+
+  <!-- 设置列表 -->
+  <view class="s-list">
+    <view class="s-item" bindtap="onClearChatHistory">
+      <view class="s-item-left">
+        <van-icon name="delete-o" size="40rpx" color="#e74c3c"/>
+        <text class="s-item-title">清空聊天记录</text>
+      </view>
+      <van-icon name="arrow" size="32rpx" color="#ccc"/>
+    </view>
+    <view class="s-item" bindtap="onToggleBlock">
+      <view class="s-item-left">
+        <van-icon name="warning-o" size="40rpx" color="{{isBlocked ? '#e74c3c' : '#666'}}"/>
+        <text class="s-item-title" style="color:{{isBlocked ? '#e74c3c' : '#333'}}">{{isBlocked ? '取消拉黑' : '拉黑该用户'}}</text>
+      </view>
+      <van-icon name="arrow" size="32rpx" color="#ccc"/>
+    </view>
+    <view class="s-item" bindtap="onTogglePin">
+      <view class="s-item-left">
+        <van-icon name="star-o" size="40rpx" color="{{isPinned ? '#FFB800' : '#666'}}"/>
+        <text class="s-item-title" style="color:{{isPinned ? '#FFB800' : '#333'}}">{{isPinned ? '取消置顶' : '置顶聊天'}}</text>
+      </view>
+      <view class="s-item-right">
+        <switch checked="{{isPinned}}" bindchange="onTogglePin"/>
+      </view>
+    </view>
+  </view>
+</view>

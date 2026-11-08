@@ -1,0 +1,42 @@
+/* ===== 聊天设置页 ===== */
+.settings-page{min-height:100vh;background:#f5f5f5;display:flex;flex-direction:column}
+
+/* 自定义导航栏 */
+.s-navbar{
+  background:#F7F7F7;flex-shrink:0;
+  border-bottom:1rpx solid #E0E0E0
+}
+.s-nav-body{
+  display:flex;align-items:center;padding:0 16rpx;position:relative
+}
+.s-nav-left{width:80rpx;display:flex;align-items:center;justify-content:flex-start}
+.s-nav-center{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)
+}
+.s-nav-title{font-size:34rpx;font-weight:600;color:#333}
+.s-nav-right{width:80rpx}
+
+/* 用户信息卡片 */
+.s-user-card{
+  background:#fff;display:flex;flex-direction:column;align-items:center;
+  padding:60rpx 0 40rpx;margin-bottom:20rpx
+}
+.s-avatar{
+  width:120rpx;height:120rpx;border-radius:50%;
+  background:linear-gradient(135deg,#5B9BFF,#367BFF);
+  display:flex;align-items:center;justify-content:center;margin-bottom:20rpx
+}
+.s-avatar-text{font-size:48rpx;color:#fff;font-weight:700}
+.s-user-name{font-size:32rpx;font-weight:600;color:#333}
+
+/* 设置列表 */
+.s-list{background:#fff;margin-bottom:20rpx}
+.s-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:28rpx 32rpx;border-bottom:1rpx solid #f0f0f0;min-height:100rpx;box-sizing:border-box
+}
+.s-item:last-child{border-bottom:none}
+.s-item:active{background:#f5f5f5}
+.s-item-left{display:flex;align-items:center;gap:20rpx}
+.s-item-title{font-size:30rpx;color:#333}
+.s-item-right{display:flex;align-items:center}

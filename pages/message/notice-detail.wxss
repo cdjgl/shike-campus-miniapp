@@ -1,0 +1,63 @@
+/* ===== 通知详情页 ===== */
+.nd-container{min-height:100vh;background:#f5f5f5;display:flex;flex-direction:column}
+
+/* 导航栏 */
+.nd-navbar{
+  background:#367BFF;flex-shrink:0;position:relative;z-index:10
+}
+.nd-nav-body{
+  display:flex;align-items:center;padding:0 24rpx;position:relative
+}
+.nd-nav-left{
+  width:160rpx;height:100%;display:flex;align-items:center;
+  justify-content:flex-start
+}
+.nd-nav-left:active{opacity:.6}
+.nd-nav-back-text{font-size:28rpx;color:#333;margin-left:4rpx}
+.nd-nav-center{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%)
+}
+.nd-nav-title{font-size:34rpx;font-weight:700;color:#fff}
+.nd-nav-right{width:80rpx}
+
+/* 内容 */
+.nd-content{flex:1;padding:20rpx}
+.nd-card{
+  background:#fff;border-radius:16rpx;padding:36rpx 32rpx;
+  box-shadow:0 2rpx 12rpx rgba(0,0,0,.06)
+}
+.nd-title{
+  font-size:36rpx;font-weight:700;color:#333;line-height:1.5;
+  display:block;margin-bottom:24rpx
+}
+/* 元信息 */
+.nd-meta{
+  display:flex;gap:40rpx;margin-bottom:28rpx
+}
+.nd-meta-item{
+  display:flex;align-items:center;gap:8rpx;font-size:24rpx;color:#999
+}
+/* 分割线 */
+.nd-divider{
+  height:1rpx;background:#f0f0f0;margin-bottom:32rpx
+}
+/* 正文 */
+.nd-body{
+  font-size:30rpx;color:#555;line-height:1.8;
+  text-align:justify
+}
+/* 返回箭头（白色，适配蓝色导航） */
+.nd-back{font-size:52rpx;color:#fff;line-height:1}
+/* 类型标签 */
+.nd-tag{
+  display:inline-block;color:#fff;font-size:24rpx;
+  padding:6rpx 22rpx;border-radius:30rpx;margin-bottom:22rpx
+}
+/* 时间 */
+.nd-time{font-size:24rpx;color:#999}
+/* 关联内容 */
+.nd-link{
+  margin-top:28rpx;text-align:center;color:#367BFF;
+  font-size:28rpx;padding:20rpx 0;background:#eef4ff;border-radius:12rpx
+}

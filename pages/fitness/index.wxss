@@ -1,0 +1,260 @@
+.page {
+  min-height: 100vh;
+  background: #f5f6fa;
+  padding-bottom: 40rpx;
+}
+
+/* ===== Section ===== */
+.section {
+  margin: 20rpx 24rpx;
+  background: #fff;
+  border-radius: 18rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.03);
+}
+.section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-left: 14rpx;
+  border-left: 6rpx solid #367BFF;
+}
+
+/* ===== 基本信息 ===== */
+.info-row {
+  display: flex;
+  gap: 20rpx;
+}
+.info-cell.half {
+  flex: 1;
+}
+.cell-label {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+.cell-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 22rpx;
+  background: #f5f6fa;
+  border-radius: 12rpx;
+  border: 2rpx solid #e8e8e8;
+}
+.cell-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+.cell-arrow {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 下拉浮层 */
+.dropdown-pop {
+  margin: 0 24rpx;
+  background: #fff;
+  border-radius: 14rpx;
+  border: 2rpx solid #eee;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+  margin-bottom: -12rpx;
+}
+.dropdown-item {
+  padding: 22rpx 28rpx;
+  font-size: 28rpx;
+  color: #333;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+.dropdown-item:last-child { border-bottom: none; }
+.dropdown-item.active { color: #367BFF; background: #f0f6ff; font-weight: 600; }
+
+/* ===== 输入行 ===== */
+.input-row {
+  display: flex;
+  gap: 20rpx;
+}
+.input-cell {
+  flex: 1;
+}
+.input-label {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+.input-box {
+  display: flex;
+  align-items: center;
+  background: #f5f6fa;
+  border-radius: 12rpx;
+  border: 2rpx solid #e8e8e8;
+  padding: 0 22rpx;
+}
+.input-box input {
+  flex: 1;
+  height: 80rpx;
+  font-size: 30rpx;
+  color: #333;
+}
+.input-unit {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 8rpx;
+  flex-shrink: 0;
+}
+.placeholder { color: #c0c0c0; }
+
+/* BMI */
+.bmi-row {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+  padding: 16rpx 20rpx;
+  background: #f5f6fa;
+  border-radius: 12rpx;
+}
+.bmi-label { font-size: 24rpx; color: #999; margin-right: 12rpx; }
+.bmi-value { font-size: 36rpx; font-weight: 700; color: #333; margin-right: 16rpx; }
+.bmi-level { font-size: 24rpx; padding: 4rpx 14rpx; border-radius: 8rpx; }
+.bmi-score { font-size: 24rpx; color: #666; margin-left: 8rpx; }
+.level-normal { background: rgba(7,193,96,0.1); color: #07c160; }
+.level-warn  { background: rgba(255,151,106,0.1); color: #ff976a; }
+.level-bad   { background: rgba(238,10,36,0.1); color: #ee0a24; }
+
+/* ===== 体测项目行 ===== */
+.item-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.item-row:last-child { margin-bottom: 0; }
+.item-label {
+  font-size: 28rpx;
+  color: #333;
+  width: 170rpx;
+  flex-shrink: 0;
+}
+.item-input-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #f5f6fa;
+  border-radius: 12rpx;
+  border: 2rpx solid #e8e8e8;
+  padding: 0 18rpx;
+}
+.item-input-box input {
+  flex: 1;
+  height: 72rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+.item-score {
+  font-size: 26rpx;
+  font-weight: 600;
+  margin-left: 14rpx;
+  width: 80rpx;
+  text-align: right;
+  flex-shrink: 0;
+}
+.score-ok  { color: #07c160; }
+.score-low { color: #ee0a24; }
+
+/* ===== 操作按钮 ===== */
+.actions {
+  margin: 0 24rpx;
+}
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  border-radius: 44rpx;
+}
+.btn:active { opacity: 0.85; }
+.btn-text { font-size: 32rpx; font-weight: 600; color: #fff; letter-spacing: 2rpx; }
+.btn-calc {
+  background: linear-gradient(135deg, #367BFF 0%, #5A9CFF 100%);
+  box-shadow: 0 6rpx 20rpx rgba(54,123,255,0.3);
+  margin-bottom: 20rpx;
+}
+.btn-row { display: flex; gap: 20rpx; }
+.btn-half { flex: 1; height: 80rpx; border-radius: 40rpx; }
+.btn-clear { background: #fff; border: 2rpx solid #ddd; }
+.btn-clear .btn-text { color: #666; }
+.btn-save  { background: #07c160; box-shadow: 0 4rpx 16rpx rgba(7,193,96,0.25); }
+
+/* ===== 总成绩卡片 ===== */
+.result-card {
+  margin: 24rpx;
+  background: linear-gradient(135deg, #367BFF 0%, #5A9CFF 100%);
+  border-radius: 20rpx;
+  padding: 30rpx 32rpx;
+  display: flex;
+  align-items: center;
+}
+.result-circle {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 28rpx;
+  border: 4rpx solid rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}
+.result-num {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+}
+.result-unit {
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.8);
+}
+.result-right {
+  flex: 1;
+}
+.result-level {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6rpx;
+}
+.result-tip {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.85);
+}
+
+/* ===== 说明卡片 ===== */
+.tips-card {
+  margin: 8rpx 24rpx 30rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.03);
+}
+.tips-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+.tips-content {
+  line-height: 1.8;
+}
+.tips-content text {
+  font-size: 24rpx;
+  color: #888;
+}

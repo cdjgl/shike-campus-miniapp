@@ -1,0 +1,392 @@
+/* ==================== 消息列表容器 ==================== */
+.message-container{min-height:100vh;background:#f5f5f5;padding-bottom:120rpx;display:flex;flex-direction:column}
+/* 列表自定义导航栏 */
+.list-navbar{
+  background:#367BFF;display:flex;align-items:center;justify-content:center;flex-shrink:0
+}
+.list-nav-title{font-size:34rpx;font-weight:700;color:#fff}
+.tabs{display:flex;background:white;border-bottom:1rpx solid #f0f0f0}
+.tab-item{flex:1;text-align:center;padding:30rpx 0;position:relative;font-size:30rpx;color:#666}
+.tab-item.active{color:#367BFF}
+.tab-item.active::after{
+  content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:60rpx;height:4rpx;background:#367BFF;border-radius:2rpx
+}
+.content-scroll{flex:1;overflow-y:auto}
+
+/* 通知列表 */
+.notice-list{padding:20rpx}
+.notice-item{display:flex;align-items:center;background:white;padding:24rpx;border-radius:12rpx;margin-bottom:15rpx}
+.notice-icon{margin-right:20rpx;flex-shrink:0}
+.notice-content{flex:1;min-width:0}
+.notice-title{font-size:28rpx;color:#333;display:block;margin-bottom:8rpx;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.notice-time{font-size:22rpx;color:#bbb}
+
+/* 私信列表 */
+.chat-list{padding:20rpx}
+.chat-item{display:flex;align-items:center;background:white;padding:24rpx;border-radius:12rpx;margin-bottom:12rpx}
+.chat-avatar{
+  width:80rpx;height:80rpx;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;margin-right:20rpx;flex-shrink:0;
+  color:#fff;font-size:32rpx;font-weight:600
+}
+.chat-content{flex:1;min-width:0;overflow:hidden}
+.chat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8rpx}
+.chat-name{font-size:30rpx;font-weight:600;color:#333}
+.chat-time{font-size:22rpx;color:#bbb}
+.chat-preview{font-size:26rpx;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.chat-badge{
+  width:36rpx;height:36rpx;background:#FF6B6B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin-left:15rpx;font-size:20rpx;color:white;flex-shrink:0
+}
+
+/* 空状态 */
+.empty-state{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120rpx 0
+}
+.empty-icon{margin-bottom:20rpx}
+.empty-text{font-size:28rpx;color:#bbb}
+
+/* ===== 私信列表长按操作菜单 ===== */
+.clp-mask{
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:99;background:transparent
+}
+.clp-popup{
+  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);
+  width:520rpx;background:#fff;border-radius:20rpx;
+  box-shadow:0 12rpx 48rpx rgba(0,0,0,.18);z-index:100;
+  padding:16rpx 0 24rpx;overflow:hidden;opacity:0;transition:all .2s ease;pointer-events:none
+}
+.clp-show{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto}
+.clp-title{
+  font-size:26rpx;color:#999;text-align:center;padding:16rpx 24rpx 12rpx;border-bottom:1rpx solid #f0f0f0
+}
+.clp-item{
+  display:flex;align-items:center;gap:16rpx;padding:28rpx 32rpx;font-size:30rpx;color:#333;transition:background .15s
+}
+.clp-item:active{background:#f5f5f5}
+
+/* ==================== 聊天室（通用即时通讯风格） ==================== */
+.chatroom-wrap{
+  display:flex;flex-direction:column;height:100vh;background:#EDEDED;
+  overflow:hidden
+}
+
+/* ===== 导航栏 ===== */
+.cr-navbar{
+  background:#F7F7F7;flex-shrink:0;position:relative;z-index:10;
+  border-bottom:1rpx solid #E0E0E0
+}
+.cr-nav-body{
+  display:flex;align-items:center;padding:0 16rpx;position:relative
+}
+.cr-nav-left{
+  width:80rpx;height:100%;display:flex;align-items:center;
+  justify-content:flex-start
+}
+.cr-nav-center{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%)
+}
+.cr-nav-title{
+  font-size:34rpx;font-weight:600;color:#333
+}
+.cr-nav-right{width:80rpx;display:flex;align-items:center;justify-content:flex-end}
+.cr-nav-right:active{opacity:.6}
+
+/* ===== 消息列表 ===== */
+.cr-msgs{flex:1;padding:16rpx 20rpx 30rpx;overflow-y:auto}
+.cr-msg-wrap{margin-bottom:20rpx}
+
+/* 系统消息：居中灰底小字 */
+.cr-sys-msg{text-align:center;padding:8rpx 0}
+.cr-sys-msg text{
+  font-size:22rpx;color:#B2B2B2;background:#D8D8D8;
+  padding:6rpx 20rpx;border-radius:8rpx;display:inline-block;line-height:1.5
+}
+
+/* 消息行 */
+.cr-msg-row{display:flex;align-items:flex-end}
+.cr-me{justify-content:flex-start;flex-direction:row-reverse;gap:14rpx;padding-right:40rpx}
+.cr-other{gap:14rpx}
+
+/* 头像 - 圆形精致风格 */
+.cr-avatar{
+  width:80rpx;height:80rpx;border-radius:50%;flex-shrink:0;
+  overflow:hidden;background:#E8F5E9
+}
+.cr-avatar-inner{
+  width:100%;height:100%;
+  background:linear-gradient(135deg,#4CAF82,#2E7D52);
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%
+}
+.cr-avatar-letter{
+  font-size:30rpx;color:#fff;font-weight:600
+}
+
+/* 自己的头像 - 蓝色渐变 */
+.cr-avatar-inner-me{
+  background:linear-gradient(135deg,#5B9BFF,#367BFF)
+}
+
+/* 气泡 */
+.cr-bubble{
+  max-width:70%;padding:16rpx 20rpx;border-radius:10rpx;word-break:break-word
+}
+/* 我发的：浅绿色气泡 */
+.cr-bubble-me{
+  background:#95EC69;color:#333;
+  border-top-right-radius:4rpx
+}
+/* 对方发的：白底 */
+.cr-bubble-other{
+  background:#FFF;color:#333;
+  border-top-left-radius:4rpx
+}
+.cr-btext{font-size:30rpx;line-height:1.55}
+.cr-bimg{
+  max-width:400rpx;border-radius:8rpx;margin-top:8rpx
+}
+
+/* 时间戳 */
+.cr-time-text{
+  display:block;text-align:center;font-size:20rpx;color:#B2B2B2;
+  margin-top:10rpx
+
+}
+
+/* ===== 已选图片预览条 ===== */
+.cr-img-bar{
+  display:flex;padding:10rpx 24rpx;background:#F7F7F7;
+  flex-shrink:0;white-space:nowrap
+}
+.cr-img-thumb-wp{
+  position:relative;width:100rpx;height:100rpx;margin-right:12rpx;
+  flex-shrink:0
+}
+.cr-img-thumb{
+  width:100%;height:100%;border-radius:8rpx
+}
+.cr-img-del{
+  position:absolute;top:-10rpx;right:-10rpx;
+  width:32rpx;height:32rpx;background:#999;border-radius:50%;
+  display:flex;align-items:center;justify-content:center
+}
+
+/* ===== 输入工具栏（单行） ===== */
+.cr-toolbar{
+  display:flex;align-items:center;padding:10rpx 16rpx calc(10rpx + env(safe-area-inset-bottom));
+  background:#F7F7F7;border-top:1rpx solid #E0E0E0;flex-shrink:0;
+  gap:12rpx
+}
+.cr-tool{width:72rpx;height:72rpx;display:flex;align-items:center;justify-content:center;border-radius:12rpx;flex-shrink:0}
+.cr-tool:active{background:#DDD}
+.cr-input{
+  flex:1;height:72rpx;background:#FFF;border-radius:8rpx;
+  padding:0 20rpx;font-size:28rpx
+}
+
+/* ===== 表情面板（覆盖在工具栏上方，参考校园墙） ===== */
+.cr-emoji-panel{
+  position:fixed;left:0;right:0;z-index:99;
+  bottom:-2000rpx;
+  background:#fdfdfd;border-radius:24rpx 24rpx 0 0;
+  padding:20rpx 24rpx calc(40rpx + env(safe-area-inset-bottom));
+  box-shadow:0 -6rpx 24rpx rgba(0,0,0,.06);
+  transition:bottom .25s ease;
+  max-height:50vh;overflow-y:auto
+}
+.cr-ep-show{bottom:calc(96rpx + env(safe-area-inset-bottom))}
+.cr-emoji-grid{
+  display:flex;flex-wrap:wrap;gap:8rpx;padding:4rpx 0
+}
+.cr-em-cell{
+  width:64rpx;height:64rpx;display:flex;align-items:center;
+  justify-content:center;font-size:36rpx;border-radius:12rpx;background:#f7f7f9;
+  transition:transform .1s,background .15s
+}
+.cr-em-cell:active{transform:scale(.85);background:#eef}
+
+/* 表情面板内图片上传行 */
+.cr-ep-upload-row{
+  display:flex;align-items:center;margin-top:16rpx;
+  padding-top:16rpx;border-top:1rpx solid #f0f0f0
+}
+.cr-ep-upload-label{font-size:25rpx;color:#999;margin-right:16rpx;white-space:nowrap}
+.cr-img-preview-inline{display:flex;flex-wrap:wrap;gap:12rpx;align-items:center}
+.cr-thumb-wrap{
+  position:relative;width:100rpx;height:100rpx;border-radius:10rpx;overflow:hidden
+}
+.cr-thumb-img{width:100%;height:100%}
+.cr-thumb-del{
+  position:absolute;top:-4rpx;right:-4rpx;width:32rpx;height:32rpx;
+  line-height:30rpx;text-align:center;border-radius:50%;
+  background:rgba(0,0,0,.5);color:#fff;font-size:22rpx;z-index:2
+}
+.cr-thumb-add{
+  width:100rpx;height:100rpx;border-radius:10rpx;border:2rpx dashed #ddd;
+  display:flex;align-items:center;justify-content:center;background:#fafafa
+}
+
+/* ==================== 语音消息 ==================== */
+/* 语音气泡行 */
+.cr-voice-wrap{
+  display:flex;align-items:center;gap:12rpx;padding:6rpx 4rpx;
+  min-width:140rpx;position:relative
+}
+.cr-voice-icon{
+  width:56rpx;height:56rpx;display:flex;align-items:center;
+  justify-content:center;border-radius:50%;flex-shrink:0
+}
+/* 对方语音图标 */
+.cr-msg-row.cr-other .cr-voice-icon{
+  transform:scaleX(-1)
+}
+/* 播放中动画 */
+.cr-voice-playing{
+  animation:voicePulse 0.8s infinite alternate
+}
+@keyframes voicePulse{
+  from{opacity:0.5;transform:scale(1)}
+  to{opacity:1;transform:scale(1.08)}
+}
+.cr-msg-row.cr-other .cr-voice-playing{
+  animation:voicePulse 0.8s infinite alternate
+}
+/* 语音时长 */
+.cr-voice-dur{
+  font-size:26rpx;color:#666;flex-shrink:0
+}
+/* 未读红点 */
+.cr-voice-unread{
+  width:14rpx;height:14rpx;background:#FF3B30;border-radius:50%;
+  position:absolute;right:-6rpx;top:-6rpx
+}
+
+/* ==================== 录音浮层 ==================== */
+.cr-record-overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;
+  background:rgba(0,0,0,0.45);display:flex;align-items:center;
+  justify-content:center
+}
+.cr-record-box{
+  width:320rpx;height:320rpx;background:rgba(0,0,0,0.75);
+  border-radius:24rpx;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:24rpx
+}
+.cr-record-cancel{
+  background:rgba(200,40,40,0.8)
+}
+/* 波形动画 */
+.cr-record-wave{
+  display:flex;align-items:center;gap:4rpx;height:60rpx
+}
+.cr-wave-bar{
+  width:6rpx;background:#07C160;border-radius:3rpx;
+  animation:waveAnim 0.8s infinite alternate;
+  min-height:8rpx
+}
+.cr-record-cancel .cr-wave-bar{
+  background:#fff
+}
+@keyframes waveAnim{
+  0%{transform:scaleY(0.3);opacity:0.5}
+  100%{transform:scaleY(1);opacity:1}
+}
+/* 提示文字 */
+.cr-record-hint{
+  font-size:24rpx;color:#ccc;text-align:center;padding:0 16rpx
+}
+.cr-record-hint-cancel{color:#FF6B6B}
+/* 录音时长 */
+.cr-record-time{
+  font-size:40rpx;color:#07C160;font-weight:700;
+  font-variant-numeric:tabular-nums
+}
+.cr-record-cancel .cr-record-time{color:#FF6B6B}
+
+/* ==================== 消息中心（角色化列表） ==================== */
+/* 通知行：标题 + 时间同行，内容省略 */
+.notice-icon{
+  width:64rpx;height:64rpx;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin-right:20rpx;flex-shrink:0
+}
+.notice-line{display:flex;align-items:center;justify-content:space-between;margin-bottom:8rpx}
+.notice-line .notice-title{margin-bottom:0;flex:1;min-width:0}
+.notice-time{flex-shrink:0;margin-left:12rpx}
+.notice-desc{
+  display:block;font-size:24rpx;color:#999;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+}
+.unread-dot{
+  width:14rpx;height:14rpx;border-radius:50%;background:#FF3B30;
+  margin-left:12rpx;flex-shrink:0
+}
+
+/* ==================== 私信详情 ==================== */
+.chat-detail{
+  position:fixed;left:0;right:0;top:0;bottom:0;z-index:50;
+  background:#f5f5f5;display:flex;flex-direction:column
+}
+.chat-detail-header{
+  display:flex;align-items:center;padding:20rpx 24rpx;
+  background:#fff;border-bottom:1rpx solid #eee;flex-shrink:0
+}
+.back-btn{font-size:44rpx;color:#333;margin-right:16rpx;line-height:1}
+.chat-detail-name{font-size:30rpx;font-weight:600;color:#333}
+.chat-detail-body{flex:1;overflow-y:auto;padding:24rpx 20rpx}
+.bubble{max-width:70%;padding:16rpx 20rpx;border-radius:12rpx;margin-bottom:16rpx}
+.bubble.me{margin-left:auto;background:#367BFF;color:#fff}
+.bubble.other{background:#fff;color:#333}
+.bubble-text{display:block;font-size:28rpx;line-height:1.5;word-break:break-all}
+.bubble-time{display:block;font-size:20rpx;opacity:.6;margin-top:6rpx;text-align:right}
+.chat-input-area{
+  display:flex;align-items:center;padding:16rpx 20rpx;
+  background:#fff;border-top:1rpx solid #eee;gap:16rpx;flex-shrink:0
+}
+.chat-input{
+  flex:1;height:72rpx;background:#f2f4f8;border-radius:36rpx;
+  padding:0 24rpx;font-size:28rpx
+}
+.chat-send{
+  padding:0 32rpx;height:72rpx;line-height:72rpx;background:#367BFF;
+  color:#fff;border-radius:36rpx;font-size:28rpx;flex-shrink:0
+}
+
+/* 通知图标：彩色圆 + 文字（不依赖字体图标） */
+.notice-icon{color:#fff;font-size:30rpx;font-weight:600}
+/* 私信详情头像 */
+.chat-detail-avatar{
+  width:64rpx;height:64rpx;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin-right:16rpx;color:#fff;font-size:28rpx;font-weight:600
+}
+/* 空状态占位圆环（不使用 emoji） */
+.empty-circle{
+  width:120rpx;height:120rpx;border-radius:50%;
+  border:4rpx solid #e2e5ea;margin-bottom:24rpx;box-sizing:border-box
+}
+
+/* 通知详情弹层 */
+.notice-detail-mask{
+  position:fixed;left:0;top:0;right:0;bottom:0;z-index:60;
+  background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center
+}
+.notice-detail-card{
+  width:600rpx;background:#fff;border-radius:24rpx;padding:40rpx 36rpx;
+  box-sizing:border-box;max-height:80vh;overflow-y:auto
+}
+.notice-detail-tag{
+  display:inline-block;color:#fff;font-size:24rpx;padding:6rpx 20rpx;border-radius:30rpx;margin-bottom:20rpx
+}
+.notice-detail-title{font-size:34rpx;font-weight:700;color:#333;margin-bottom:12rpx}
+.notice-detail-time{font-size:24rpx;color:#bbb;margin-bottom:24rpx}
+.notice-detail-content{font-size:28rpx;color:#555;line-height:1.7;margin-bottom:24rpx;word-break:break-all}
+.notice-detail-link{color:#367BFF;font-size:28rpx;margin-bottom:10rpx}
+.notice-detail-close{
+  margin-top:20rpx;text-align:center;padding:22rpx 0;background:#f2f4f8;
+  color:#666;font-size:30rpx;border-radius:12rpx
+}

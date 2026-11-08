@@ -1,0 +1,1 @@
+{"usingComponents": {"van-icon": "@vant/weapp/icon/index", "van-field": "@vant/weapp/field/index", "van-radio": "@vant/weapp/radio/index", "van-radio-group": "@vant/weapp/radio-group/index", "van-checkbox": "@vant/weapp/checkbox/index", "van-checkbox-group": "@vant/weapp/checkbox-group/index", "van-button": "@vant/weapp/button/index"}, "navigationBarTitleText": "申请接单"}

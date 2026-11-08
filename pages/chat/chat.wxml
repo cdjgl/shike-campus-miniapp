@@ -1,0 +1,175 @@
+<view class="chatroom-wrap">
+  <!-- 顶部导航 -->
+  <view class="cr-navbar" style="padding-top:{{statusBarHeight}}px;">
+    <view class="cr-nav-body" style="height:{{navBarHeight}}px;">
+      <view class="cr-nav-left" bindtap="backToList">
+        <text class="cr-back">‹</text>
+      </view>
+      <view class="cr-nav-center" bindtap="onOpenPeerProfile">
+        <text class="cr-nav-title">{{chat.name}}</text>
+      </view>
+      <view class="cr-nav-right"></view>
+    </view>
+  </view>
+
+  <!-- 消息区 -->
+  <scroll-view scroll-y class="cr-msgs" scroll-into-view="{{scrollTo}}" scroll-with-animation>
+    <view wx:for="{{chat.detail}}" wx:key="id" class="cr-msg-wrap" id="msg-{{item.id}}">
+      <text wx:if="{{item.showTime}}" class="cr-time-line">{{item.time}}</text>
+      <view class="cr-msg-row {{item.fromMe ? 'cr-me' : 'cr-other'}}">
+        <view class="cr-avatar" catchtap="onAvatarTap" data-me="{{item.fromMe ? 1 : 0}}">
+          <view class="cr-avatar-inner" style="background: {{item.fromMe ? '#5B9BFF' : chat.avatarColor}};">
+            <text class="cr-avatar-letter">{{item.fromMe ? myChar : chat.avatarChar}}</text>
+          </view>
+        </view>
+        <view class="cr-bubble {{item.fromMe ? 'cr-bubble-me' : 'cr-bubble-other'}}">
+          <!-- 文字 / 文字表情 -->
+          <text wx:if="{{!item.type || item.type === 'text'}}" class="cr-btext">{{item.text}}</text>
+          <!-- 历史表情包消息（CSS 绘制，兼容旧数据） -->
+          <view wx:elif="{{item.type === 'face'}}" class="cr-sticker-msg">
+            <view class="cr-sticker-box">
+              <view class="cr-sticker s-{{item.shape}}">
+                <view class="eye eye-l"></view>
+                <view class="eye eye-r"></view>
+                <view class="mouth"></view>
+              </view>
+            </view>
+            <text class="cr-sticker-label">[{{item.label}}]</text>
+          </view>
+          <!-- 真实 emoji（与文字同尺寸） -->
+          <text wx:elif="{{item.type === 'emoji'}}" class="cr-emoji-big">{{item.text}}</text>
+          <!-- 图片 -->
+          <image wx:elif="{{item.type === 'image'}}" class="cr-msg-image" src="{{item.path}}"
+                 mode="widthFix" bindtap="previewImage" data-path="{{item.path}}"></image>
+          <!-- 语音 -->
+          <view wx:elif="{{item.type === 'voice'}}" class="cr-voice-wrap"
+                bindtap="playVoice" data-id="{{item.id}}" data-path="{{item.path}}">
+            <view class="cr-voice-icon {{playingId === item.id ? 'cr-voice-playing' : ''}}">
+              <view class="ico ico-voice"></view>
+            </view>
+            <text class="cr-voice-dur">{{item.duration}}″</text>
+            <view wx:if="{{!item.fromMe && !item.played}}" class="cr-voice-unread"></view>
+          </view>
+          <!-- 文件 -->
+          <view wx:elif="{{item.type === 'file'}}" class="cr-file-card">
+            <view class="cr-file-ico"><view class="ico ico-file"></view></view>
+            <view class="cr-file-info">
+              <text class="cr-file-name">{{item.fileName}}</text>
+              <text class="cr-file-size">{{item.fileSize}}</text>
+            </view>
+          </view>
+          <!-- 位置 -->
+          <view wx:elif="{{item.type === 'location'}}" class="cr-loc-card">
+            <text class="cr-loc-name">{{item.name}}</text>
+            <text class="cr-loc-addr">{{item.address}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view style="height:24rpx;"></view>
+  </scroll-view>
+
+  <!-- 底部工具栏 -->
+  <view class="cr-toolbar">
+    <!-- 左：语音 / 键盘 -->
+    <view class="cr-tool" bindtap="toggleVoiceMode">
+      <view wx:if="{{mode === 'text'}}" class="ico ico-mic"></view>
+      <view wx:else class="ico ico-keyboard"></view>
+    </view>
+
+    <!-- 中：输入框 或 按住说话 -->
+    <input wx:if="{{mode === 'text'}}" class="cr-input" value="{{inputValue}}"
+           placeholder="请输入..." bindinput="onInput" bindfocus="onInputFocus"
+           confirm-type="send" bindconfirm="sendMessage" cursor-spacing="20" />
+    <view wx:else class="cr-talk-btn {{recording ? 'recording' : ''}}"
+          bindtouchstart="onTalkStart" bindtouchmove="onTalkMove"
+          bindtouchend="onTalkEnd" bindtouchcancel="onTalkCancel">
+      {{recording ? '松开 发送' : '按住 说话'}}
+    </view>
+
+    <!-- 右：表情 / 更多 -->
+    <view class="cr-tool {{panel === 'emoji' ? 'active' : ''}}" bindtap="toggleEmoji">
+      <view class="ico ico-smile"></view>
+    </view>
+    <view class="cr-tool {{panel === 'more' ? 'active' : ''}}" bindtap="toggleMore">
+      <view class="ico ico-plus"></view>
+    </view>
+  </view>
+
+  <!-- 表情面板：Emojiall 分类 / 颜文字 -->
+  <view wx:if="{{panel === 'emoji'}}" class="cr-panel cr-emoji-panel">
+    <view class="cr-panel-head">
+      <scroll-view scroll-x class="cr-panel-tabs-scroll" scroll-into-view="tab-{{faceGroupIndex}}">
+        <view class="cr-panel-tabs">
+          <view wx:for="{{faceTabs}}" wx:key="*this" id="tab-{{index}}"
+                class="cr-panel-tab {{faceGroupIndex === index ? 'active' : ''}}"
+                bindtap="switchFaceGroup" data-index="{{index}}">{{item}}</view>
+        </view>
+      </scroll-view>
+      <view class="cr-face-ops">
+        <view class="cr-face-del" bindtap="onFaceDelete">删除</view>
+        <view class="cr-face-send" bindtap="sendMessage">发送</view>
+      </view>
+    </view>
+    <scroll-view scroll-y class="cr-face-scroll">
+      <!-- 颜文字：插入输入框 -->
+      <view wx:if="{{faceGroupIndex === kaomojiIndex}}" class="cr-face-grid">
+        <view wx:for="{{faceTextList}}" wx:key="*this"
+              class="cr-face-cell" bindtap="insertFace" data-face="{{item}}">{{item}}</view>
+      </view>
+      <!-- Emojiall 真 emoji：点即发送普通尺寸消息 -->
+      <view wx:else class="cr-emoji-grid">
+        <view wx:for="{{emojiList}}" wx:key="*this"
+              class="cr-emoji-cell" bindtap="sendEmoji" data-ch="{{item}}">{{item}}</view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 更多面板 -->
+  <view wx:if="{{panel === 'more'}}" class="cr-panel cr-more-panel">
+    <view class="cr-more-grid">
+      <view wx:for="{{moreItems}}" wx:key="key" class="cr-more-item"
+            bindtap="onMoreItem" data-key="{{item.key}}">
+        <view class="cr-more-ico"><view class="ico ico-{{item.icon}}"></view></view>
+        <text class="cr-more-label">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 录音浮层 -->
+  <view wx:if="{{recording}}" class="cr-record-overlay">
+    <view class="cr-rec-targets">
+      <view class="cr-rec-target {{recordState === 'text' ? 'active' : ''}}">
+        <text class="cr-rec-target-txt">文</text>
+        <text class="cr-rec-target-sub">转文字</text>
+      </view>
+      <view class="cr-rec-target {{recordState === 'cancel' ? 'active danger' : ''}}">
+        <text class="cr-rec-target-txt">×</text>
+        <text class="cr-rec-target-sub">取消</text>
+      </view>
+    </view>
+    <view class="cr-record-box {{recordState === 'cancel' ? 'cr-record-cancel' : ''}}">
+      <view class="cr-record-wave">
+        <view wx:for="{{waveBars}}" wx:key="k" class="cr-wave-bar"
+              style="height:{{item.h}}rpx;animation-delay:{{index * 0.12}}s"></view>
+      </view>
+      <text class="cr-record-time">{{recordSeconds}}″</text>
+      <text class="cr-record-hint {{recordState === 'cancel' ? 'cr-record-hint-cancel' : ''}}">{{recordHint}}</text>
+    </view>
+    <view class="cr-record-foot">松开发送 · 上滑左侧转文字 / 右侧取消</view>
+  </view>
+
+  <!-- 语音转文字确认 -->
+  <view wx:if="{{showTextConfirm}}" class="cr-confirm-mask">
+    <view class="cr-confirm-card">
+      <text class="cr-confirm-title">语音转文字</text>
+      <text class="cr-confirm-desc">确认转换结果后，将以文字消息发送</text>
+      <textarea class="cr-confirm-input" value="{{textConfirmValue}}"
+                bindinput="onTextConfirmInput" placeholder="输入转换后的文字"></textarea>
+      <view class="cr-confirm-btns">
+        <view class="cr-confirm-cancel" bindtap="cancelTextConfirm">取消</view>
+        <view class="cr-confirm-ok" bindtap="confirmTextSend">发送</view>
+      </view>
+    </view>
+  </view>
+</view>

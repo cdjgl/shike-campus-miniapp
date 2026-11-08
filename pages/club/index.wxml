@@ -1,0 +1,71 @@
+<view class="club-container">
+  <!-- 顶部搜索 -->
+  <view class="club-search">
+    <view class="search-box">
+      <van-icon name="search" size="28rpx" color="#999" />
+      <input
+        class="search-input"
+        value="{{ searchValue }}"
+        placeholder="搜索社团名称"
+        placeholder-class="search-placeholder"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+    </view>
+  </view>
+
+  <!-- 分类标签 -->
+  <scroll-view scroll-x class="category-scroll" enhanced show-scrollbar="{{ false }}">
+    <view class="category-list">
+      <view
+        wx:for="{{ categories }}"
+        wx:key="index"
+        class="category-item {{ activeCategory === index ? 'category-active' : '' }}"
+        data-index="{{ index }}"
+        bindtap="switchCategory"
+      >
+        <text>{{ item }}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 社团列表 -->
+  <view class="club-list">
+    <view
+      wx:for="{{ filteredClubs }}"
+      wx:key="id"
+      class="club-card"
+      bindtap="goDetail"
+      data-id="{{ item.id }}"
+    >
+      <view class="club-card-top">
+        <view class="club-logo">
+          <van-icon name="friends-o" size="48rpx" color="#367BFF" />
+        </view>
+        <view class="club-info">
+          <text class="club-name">{{ item.name }}</text>
+          <text class="club-category">{{ item.category }} · 成立于{{ item.established }}年</text>
+        </view>
+        <view
+          class="join-btn {{ item.joined ? 'joined' : '' }}"
+          catchtap="joinClub"
+          data-id="{{ item.id }}"
+        >
+          <text>{{ item.joined ? '已加入' : '加入' }}</text>
+        </view>
+      </view>
+      <view class="club-intro">{{ item.intro }}</view>
+      <view class="club-bottom">
+        <view class="club-tags">
+          <text wx:for="{{ item.tags }}" wx:key="*this" wx:for-item="tag" class="tag">{{ tag }}</text>
+        </view>
+        <text class="club-count">{{ item.memberCount }}人</text>
+      </view>
+    </view>
+
+    <view wx:if="{{ filteredClubs.length === 0 }}" class="empty-club">
+      <van-icon name="info-o" size="80rpx" color="#ccc" />
+      <text>暂无社团</text>
+    </view>
+  </view>
+</view>

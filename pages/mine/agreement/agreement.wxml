@@ -1,0 +1,21 @@
+<view class="container">
+  <!-- 内容滚动区域 -->
+  <scroll-view scroll-y="true" class="content-scroll">
+    <view class="content-wrapper">
+      <!-- 协议标题 -->
+      <text class="agreement-title">{{contentList[0].text}}</text>
+      <!-- 更新日期 -->
+      <text class="update-date">{{contentList[1].text}}</text>
+
+      <!-- 章节列表 -->
+      <block wx:for="{{contentList}}" wx:key="index">
+        <view wx:if="{{item.type === 'section'}}" class="section">
+          <text class="section-title">{{item.title}}</text>
+          <block wx:for="{{item.content}}" wx:for-item="para" wx:key="*this">
+            <text class="paragraph">{{para}}</text>
+          </block>
+        </view>
+      </block>
+    </view>
+  </scroll-view>
+</view>

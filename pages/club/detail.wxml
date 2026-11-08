@@ -1,0 +1,91 @@
+<view class="detail-container" wx:if="{{ club }}">
+  <!-- 顶部信息 -->
+  <view class="detail-header">
+    <view class="detail-logo">
+      <van-icon name="friends-o" size="80rpx" color="#367BFF" />
+    </view>
+    <view class="detail-title">
+      <text class="detail-name">{{ club.name }}</text>
+      <text class="detail-category">{{ club.category }} · {{ club.memberCount }}人</text>
+    </view>
+    <view class="detail-join {{ joined ? 'joined' : '' }}" bindtap="toggleJoin">
+      <text>{{ joined ? '已加入' : '加入社团' }}</text>
+    </view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="info-card">
+    <view class="info-row">
+      <van-icon name="manager-o" size="32rpx" color="#367BFF" />
+      <text class="info-label">社长</text>
+      <text class="info-value">{{ club.president }}</text>
+    </view>
+    <view class="info-row">
+      <van-icon name="clock-o" size="32rpx" color="#367BFF" />
+      <text class="info-label">成立时间</text>
+      <text class="info-value">{{ club.established }}年</text>
+    </view>
+    <view class="info-row">
+      <van-icon name="friends-o" size="32rpx" color="#367BFF" />
+      <text class="info-label">成员人数</text>
+      <text class="info-value">{{ club.memberCount }}人</text>
+    </view>
+    <view class="info-row" wx:if="{{ club.honor }}">
+      <van-icon name="medal-o" size="32rpx" color="#ff9500" />
+      <text class="info-label">荣誉</text>
+      <text class="info-value" style="color:#ff9500;">{{ club.honor }}</text>
+    </view>
+  </view>
+
+  <!-- 标签 -->
+  <view class="tag-row">
+    <text wx:for="{{ club.tags }}" wx:key="*this" wx:for-item="tag" class="dtag">{{ tag }}</text>
+  </view>
+
+  <!-- 社团简介 -->
+  <view class="section">
+    <view class="section-title">
+      <van-icon name="info-o" size="36rpx" color="#367BFF" />
+      <text>社团简介</text>
+    </view>
+    <view class="section-content">
+      <text class="desc-text">{{ club.description }}</text>
+    </view>
+  </view>
+
+  <!-- 主要活动 -->
+  <view class="section" wx:if="{{ club.activities && club.activities.length > 0 }}">
+    <view class="section-title">
+      <van-icon name="flag-o" size="36rpx" color="#367BFF" />
+      <text>主要活动</text>
+    </view>
+    <view class="activity-list">
+      <view wx:for="{{ club.activities }}" wx:key="*this" wx:for-item="act" class="activity-item">
+        <view class="activity-dot"></view>
+        <text>{{ act }}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 联系方式 -->
+  <view class="contact-btn" bindtap="showContact">
+    <van-icon name="phone-o" size="36rpx" color="#fff" />
+    <text>查看联系方式</text>
+  </view>
+</view>
+
+<view class="empty-detail" wx:else>
+  <text>社团信息加载中...</text>
+</view>
+
+<!-- 联系方式弹窗 -->
+<view class="contact-modal" wx:if="{{ showModal }}" catchtap="hideContact">
+  <view class="contact-mask"></view>
+  <view class="contact-dialog" catchtap="">
+    <text class="contact-title">联系方式</text>
+    <text class="contact-text">{{ club.contact }}</text>
+    <view class="contact-close" bindtap="hideContact">
+      <text>知道了</text>
+    </view>
+  </view>
+</view>

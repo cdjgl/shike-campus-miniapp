@@ -1,0 +1,366 @@
+<view class="lost-container">
+  <!-- ====== 顶部Tab栏 ====== -->
+  <view class="main-tabs">
+    <view class="tab-item {{activeTab === 0 ? 'active' : ''}}" bindtap="onTabChange" data-index="0">
+      <text>失物列表</text>
+    </view>
+    <view class="tab-item {{activeTab === 1 ? 'active' : ''}}" bindtap="onTabChange" data-index="1">
+      <text>招领列表</text>
+    </view>
+    <view class="tab-item {{activeTab === 2 ? 'active' : ''}}" bindtap="onTabChange" data-index="2">
+      <text>发布信息</text>
+    </view>
+  </view>
+
+  <!-- ====== 列表区域（失物/招领） ====== -->
+  <block wx:if="{{activeTab !== 2}}">
+    <!-- 搜索框 -->
+    <view class="filter-bar">
+      <view class="search-box">
+        <van-icon name="search" size="28rpx" color="#999"/>
+        <input class="search-input" placeholder="搜索物品名称/地点" value="{{searchKey}}" bindinput="onSearchInput"/>
+      </view>
+    </view>
+
+    <!-- 类型筛选 -->
+    <scroll-view class="type-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="type-tags">
+        <view wx:for="{{typeOptions}}" wx:key="*this" wx:for-item="it"
+              class="type-tag {{typeFilter === it ? 'active' : ''}}"
+              data-type="{{it}}" bindtap="onTypeFilter">{{it}}</view>
+      </view>
+    </scroll-view>
+
+    <!-- 统计 -->
+    <view class="list-count">共 {{filteredItems.length}} 条记录</view>
+
+    <!-- 空状态 -->
+    <view class="empty-wrap" wx:if="{{filteredItems.length === 0}}">
+      <view class="local-empty">
+        <view class="local-empty-icon"><view class="local-empty-handle"></view></view>
+        <text class="local-empty-text">暂无相关记录</text>
+      </view>
+    </view>
+
+    <!-- 卡片列表 -->
+    <scroll-view class="item-list" scroll-y enhanced>
+      <view wx:for="{{filteredItems}}" wx:key="id" wx:for-item="item"
+            class="item-card" data-item="{{item}}" bindtap="onItemClick">
+        <!-- 卡片头部 -->
+        <view class="card-header">
+          <view class="card-title-row">
+            <text class="card-name">{{item.name}}</text>
+            <van-tag type="{{item.type === 'lost' ? 'danger' : 'success'}}" size="medium" plain>
+              {{item.type === 'lost' ? '失物' : '招领'}}
+            </van-tag>
+          </view>
+          <view class="card-header-right">
+            <text class="card-type-tag">{{item.itemType}}</text>
+            <!-- 只有自己发的才显示删除按钮 -->
+            <view class="del-btn" wx:if="{{item.publisher === '我'}}" data-item="{{item}}" catchtap="onDeleteItem">
+              <van-icon name="delete-o" size="34rpx" color="#ccc"/>
+            </view>
+          </view>
+        </view>
+
+        <!-- 卡片内容 -->
+        <view class="card-body">
+          <view class="info-row">
+            <text class="info-label">地点</text>
+            <text class="info-val">{{item.location}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">描述</text>
+            <text class="info-val desc">{{item.description}}</text>
+          </view>
+          <!-- 图片 -->（可点击放大预览）
+          <view class="img-row" wx:if="{{item.images.length > 0}}">
+            <image wx:for="{{item.images}}" wx:key="*this" wx:for-item="img"
+                   src="{{img}}" mode="aspectFill" class="thumb-img"
+                   data-url="{{img}}" data-urls="{{item.images}}" catchtap="onPreviewImage"/>
+          </view>
+        </view>
+
+        <!-- 底部操作栏 -->
+        <view class="card-footer">
+          <view class="footer-left">
+            <text class="pub-name">{{item.publisher}}</text>
+            <text class="pub-time">{{item.time}}</text>
+          </view>
+          <view class="footer-right">
+            <view class="fbtn" data-item="{{item}}" catchtap="onShowComment">
+              <van-icon name="chat-o" size="28rpx" color="#999"/>
+              <text>{{item.commentCount || 0}}</text>
+            </view>
+            <view class="fbtn chat-fbtn" data-item="{{item}}" catchtap="onChat">
+              <van-icon name="friends-o" size="28rpx" color="#367BFF"/>
+              <text>私信</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </block>
+
+  <!-- ====== 发布页面 ====== -->
+  <block wx:if="{{activeTab === 2}}">
+    <scroll-view class="publish-scroll" scroll-y enhanced>
+      <view class="publish-form">
+        <!-- 类型切换条 -->
+        <view class="type-switch-bar">
+          <view class="sw-item {{publishType === 'lost' ? 'sw-active-lost' : ''}}"
+                bindtap="switchPublishType">发布失物</view>
+          <view class="sw-divider"></view>
+          <view class="sw-item {{publishType === 'found' ? 'sw-active-found' : ''}}"
+                bindtap="switchPublishType">发布招领</view>
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">物品名称</text>
+          <input class="form-input" placeholder="请输入物品名称"
+                 value="{{itemName}}" data-field="itemName" bindinput="onInputChange"/>
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">{{publishType === 'lost' ? '丢失地点' : '拾到地点'}}</text>
+          <input class="form-input"
+                 placeholder="{{publishType === 'lost' ? '请输入丢失地点' : '请输入拾到地点'}}"
+                 value="{{itemLocation}}" data-field="itemLocation" bindinput="onInputChange"/>
+        </view>
+
+        <view class="form-row" bindtap="openTypePicker">
+          <text class="form-label">物品类型</text>
+          <view class="form-pick">
+            <text class="{{itemType ? 'pick-val' : 'pick-placeholder'}}">{{itemType || '请选择类型'}}</text>
+            <van-icon name="arrow" size="24rpx" color="#999"/>
+          </view>
+        </view>
+
+        <view class="form-row form-col">
+          <text class="form-label">物品图片</text>
+          <van-uploader file-list="{{fileList}}" max-count="6"
+                        max-size="{{5242880}}" preview-size="150"
+                        upload-text="上传图片" image-fit="aspectFill"
+                        bind:after-read="afterRead" bind:delete="onDelete"/>
+        </view>
+
+        <view class="form-row form-col">
+          <text class="form-label">文字描述</text>
+          <textarea class="form-area"
+                    placeholder="请描述物品的详细信息，如颜色、品牌、特征等..."
+                    value="{{itemDescription}}"
+                    data-field="itemDescription" bindinput="onInputChange"
+                    maxlength="500" auto-height/>
+          <text class="area-count">{{itemDescription.length}}/500</text>
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">联系方式</text>
+          <input class="form-input" placeholder="其他联系方式（选填）"
+                 value="{{contactWay}}" data-field="contactWay" bindinput="onInputChange"/>
+        </view>
+
+        <view class="form-btns">
+          <van-button plain type="default" size="large" block custom-style="margin-bottom:20rpx;" bindtap="onClear">
+            一键清空
+          </van-button>
+          <van-button type="info" size="large" block bindtap="onSubmit" custom-class="submit-btn">
+            立即发布
+          </van-button>
+        </view>
+
+      </view>
+    </scroll-view>
+  </block>
+
+  <!-- ====== 物品类型选择弹窗 ====== -->
+  <van-popup show="{{showTypePicker}}" position="bottom" round bind:close="closeTypePicker">
+    <view class="picker-wrap">
+      <view class="picker-head">
+        <text class="picker-title">选择物品类型</text>
+        <van-icon name="cross" size="36rpx" color="#999" bindtap="closeTypePicker"/>
+      </view>
+      <view class="picker-grid">
+        <view wx:for="{{typeOptions}}" wx:key="*this" wx:for-item="t"
+              wx:if="{{t !== '全部'}}"
+              class="pgrid-item {{itemType === t ? 'pgrid-sel' : ''}}"
+              data-type="{{t}}" bindtap="onSelectItemType">{{t}}</view>
+      </view>
+    </view>
+  </van-popup>
+
+  <!-- ====== 详情弹窗 ====== -->
+  <van-popup show="{{showDetail}}" position="bottom" round custom-style="height:75vh;" bind:close="onCloseDetail">
+    <view class="detail-wrap" wx:if="{{currentItem}}">
+      <view class="detail-top">
+        <text class="d-title">{{currentItem.name}}</text>
+        <van-icon name="cross" size="38rpx" color="#999" bindtap="onCloseDetail"/>
+      </view>
+
+      <view class="d-meta">
+        <van-tag type="{{currentItem.type === 'lost' ? 'danger' : 'success'}}" size="medium">
+          {{currentItem.type === 'lost' ? '失物' : '招领'}}
+        </van-tag>
+        <text class="d-meta-type">{{currentItem.itemType}}</text>
+        <text class="d-time">{{currentItem.time}}</text>
+      </view>
+
+      <scroll-view class="d-body" scroll-y enhanced>
+        <view class="d-sec">
+          <text class="d-sec-lbl">地点</text>
+          <text class="d-sec-val">{{currentItem.location}}</text>
+        </view>
+        <view class="d-sec">
+          <text class="d-sec-lbl">详细描述</text>
+          <text class="d-sec-val d-desc">{{currentItem.description}}</text>
+        </view>
+        <!-- 详情图片可点击放大 -->
+        <view class="d-imgs" wx:if="{{currentItem.images.length > 0}}">
+          <image wx:for="{{currentItem.images}}" wx:key="*this" wx:for-item="img"
+                 src="{{img}}" mode="aspectFill" class="d-img"
+                 data-url="{{img}}" data-urls="{{currentItem.images}}" bindtap="onPreviewImage"/>
+        </view>
+        <view class="d-pub-info">
+          <text>发布人：</text>
+          <text class="d-pub-name">{{currentItem.publisher}}</text>
+          <text wx:if="{{currentItem.contactWay}}" class="d-contact">{{currentItem.contactWay}}</text>
+        </view>
+      </scroll-view>
+
+      <view class="d-actions">
+        <!-- 仅自己发布的可删除 -->
+        <view class="d-abtn del-abtn" wx:if="{{currentItem.publisher === '我'}}" data-item="{{currentItem}}" catchtap="onDeleteItem">
+          <van-icon name="delete-o" size="40rpx" color="#e74c3c"/>
+          <text style="color:#e74c3c">删除</text>
+        </view>
+        <view class="d-abtn" data-item="{{currentItem}}" catchtap="onShowComment">
+          <van-icon name="chat-o" size="40rpx" color="#367BFF"/>
+          <text style="color:#367BFF">评论 ({{currentItem.commentCount || 0}})</text>
+        </view>
+        <view class="d-abtn cta-abtn" data-item="{{currentItem}}" catchtap="onChat">
+          <van-icon name="friends-o" size="40rpx" color="#fff"/>
+          <text style="color:#fff;font-weight:600">联系TA</text>
+        </view>
+      </view>
+    </view>
+  </van-popup>
+
+  <!-- ====== 评论弹窗（固定不滑动 + 支持发图+表情） ====== -->
+  <van-popup show="{{showComment}}" position="bottom" round custom-style="height:72vh;" bind:close="onCloseComment">
+    <view class="cmt-wrap" wx:if="{{currentItem}}">
+      <view class="cmt-head">
+        <text>评论互动</text>
+        <van-icon name="cross" size="34rpx" color="#999" bindtap="onCloseComment"/>
+      </view>
+
+      <view class="cmt-brief">
+        <text class="cmt-brief-name">{{currentItem.name}}</text>
+        <text class="cmt-brief-loc">{{currentItem.location}}</text>
+      </view>
+
+      <!-- 评论列表（禁止横向滚动） -->
+      <scroll-view class="cmt-list" scroll-y enhanced show-scrollbar="{{false}}">
+        <view wx:if="{{currentComments.length === 0}}" class="cmt-empty">
+          <text>暂无评论，快来第一个留言吧~</text>
+        </view>
+        <view wx:for="{{currentComments}}" wx:key="index" wx:for-item="c" class="cmt-swipe-wrap">
+          <!-- 自己的评论：支持左滑删除（对齐 news/detail 方案） -->
+          <view
+            wx:if="{{c.user === '我'}}"
+            class="cmt-swipe-inner"
+            style="transform: translateX({{cmtSwipeIndex === index ? cmtSwipeX : 0}}rpx);"
+            data-index="{{index}}"
+            bindtouchstart="onTouchStartCmt"
+            bindtouchmove="onTouchMoveCmt"
+            bindtouchend="onTouchEndCmt"
+          >
+            <view class="cmt-swipe-content">
+              <view class="cmt-avatar"><van-icon name="user-o" size="32rpx" color="#ddd"/></view>
+              <view class="cmt-body">
+                <view class="cmt-item-hd">
+                  <text class="cmt-user">{{c.user}}</text>
+                  <text class="cmt-cmtime">{{c.time}}</text>
+                </view>
+                <text class="cmt-txt" wx:if="{{c.text}}">{{c.text}}</text>
+                <!-- 评论图片 -->
+                <view class="cmt-imgs" wx:if="{{c.images && c.images.length > 0}}">
+                  <image wx:for="{{c.images}}" wx:key="*this" wx:for-item="img" wx:for-index="ii"
+                         src="{{img}}" mode="aspectFill" class="cmt-thumb"
+                         data-url="{{img}}" data-urls="{{c.images}}" catchtap="onCommentPreviewImage"/>
+                </view>
+              </view>
+            </view>
+            <!-- 删除按钮：absolute 定位在右侧溢出区 -->
+            <view class="cmt-del-btn" catchtap="onDeleteComment" data-idx="{{index}}">
+              <text>删除</text>
+            </view>
+          </view>
+          <!-- 别人的评论：正常展示，不可滑动 -->
+          <view wx:else class="cmt-item">
+            <view class="cmt-avatar"><van-icon name="user-o" size="32rpx" color="#ddd"/></view>
+            <view class="cmt-body">
+              <view class="cmt-item-hd">
+                <text class="cmt-user">{{c.user}}</text>
+                <text class="cmt-cmtime">{{c.time}}</text>
+              </view>
+              <text class="cmt-txt" wx:if="{{c.text}}">{{c.text}}</text>
+              <!-- 评论图片 -->
+              <view class="cmt-imgs" wx:if="{{c.images && c.images.length > 0}}">
+                <image wx:for="{{c.images}}" wx:key="*this" wx:for-item="img" wx:for-index="ii"
+                       src="{{img}}" mode="aspectFill" class="cmt-thumb"
+                       data-url="{{img}}" data-urls="{{c.images}}" catchtap="onCommentPreviewImage"/>
+              </view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+
+      <!-- 已选图片预览 -->
+      <view class="cmt-img-pre" wx:if="{{commentImages.length > 0}}">
+        <view wx:for="{{commentImages}}" wx:key="*this" wx:for-item="img" wx:for-index="cix" class="cmt-pre-item">
+          <image src="{{img}}" mode="aspectFill" class="cmt-pre-img"/>
+          <view class="cmt-pre-del" data-index="{{cix}}" catchtap="onCommentImgDelete">
+            <van-icon name="cross" size="22rpx" color="#fff"/>
+          </view>
+        </view>
+      </view>
+
+      <!-- 输入区域 -->
+      <view class="cmt-input-area">
+        <view class="cmt-tools" wx:if="{{!showEmoji}}">
+          <van-uploader file-list="{{[]}}" max-count="6"
+                        max-size="{{5242880}}" preview-size="0" style="display:inline-block"
+                        upload-text="" show-upload="{{true}}"
+                        bind:after-read="onCommentAfterRead">
+            <view class="cmt-tool-btn">
+              <van-icon name="photo-o" size="40rpx" color="#666"/>
+            </view>
+          </van-uploader>
+          <view class="cmt-tool-btn" bindtap="toggleEmoji">
+            <text style="font-size:36rpx">😊</text>
+          </view>
+        </view>
+        <view class="cmt-input-row">
+          <input class="cmt-input" placeholder="写下你的评论..."
+                 value="{{commentText}}" bindinput="onCommentInput"
+                 confirm-type="send" bindconfirm="onSubmitComment"
+                 adjust-position="{{true}}" cursor-spacing="20"/>
+          <van-button type="info" size="small" bindtap="onSubmitComment">发送</van-button>
+        </view>
+      </view>
+
+      <!-- 表情选择面板 -->
+      <view class="emoji-panel" wx:if="{{showEmoji}}">
+        <view class="emoji-header">
+          <text>选择表情</text>
+          <van-icon name="arrow-down" size="32rpx" color="#999" bindtap="toggleEmoji"/>
+        </view>
+        <view class="emoji-grid">
+          <view wx:for="{{['😀','😂','🤣','😍','😘','🥰','😎','🤩','😊','🙂','😢','😭','😤','😡','🥺','😱','👍','👎','🙏','💪','🎉','🔥','❤️','💔','⭐','✨','🌸','🌹','🍀','🌻']}}"
+                wx:key="*this" wx:for-item="em"
+                class="emoji-item" data-emoji="{{em}}" bindtap="onEmojiTap">{{em}}</view>
+        </view>
+      </view>
+    </view>
+  </van-popup>
+</view>

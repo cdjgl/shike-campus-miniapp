@@ -1,0 +1,15 @@
+{
+  "navigationBarTitleText": "失物招领",
+  "usingComponents": {
+    "van-icon": "@vant/weapp/icon/index",
+    "van-uploader": "@vant/weapp/uploader/index",
+    "van-field": "@vant/weapp/field/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-tabs": "@vant/weapp/tabs/index",
+    "van-tab": "@vant/weapp/tab/index",
+    "van-tag": "@vant/weapp/tag/index",
+    "van-dialog": "@vant/weapp/dialog/index",
+    "van-popup": "@vant/weapp/popup/index",
+    "van-action-sheet": "@vant/weapp/action-sheet/index"
+  }
+}

@@ -1,0 +1,49 @@
+<view class="message-container">
+  <!-- 顶部 Tab -->
+  <view class="tabs">
+    <view class="tab-item {{activeTab === 'notice' ? 'active' : ''}}"
+          bindtap="switchTab" data-tab="notice">通知</view>
+    <view class="tab-item {{activeTab === 'chat' ? 'active' : ''}}"
+          bindtap="switchTab" data-tab="chat">私信</view>
+  </view>
+
+  <!-- 通知列表 -->
+  <view wx:if="{{activeTab === 'notice'}}" class="notice-list">
+    <view wx:if="{{notices.length === 0}}" class="empty-state">
+      <view class="empty-circle"></view>
+      <text class="empty-text">暂无通知</text>
+    </view>
+    <view wx:for="{{notices}}" wx:key="id" class="notice-item"
+          bindtap="onNoticeTap" data-index="{{index}}">
+      <view class="notice-icon" style="background: {{item.typeColor}};">{{item.typeChar}}</view>
+      <view class="notice-content">
+        <view class="notice-line">
+          <text class="notice-title">{{item.title}}</text>
+          <text class="notice-time">{{item.time}}</text>
+        </view>
+        <text class="notice-desc">{{item.content}}</text>
+      </view>
+      <view wx:if="{{!item.read}}" class="unread-dot"></view>
+    </view>
+  </view>
+
+  <!-- 私信列表 -->
+  <view wx:if="{{activeTab === 'chat'}}" class="chat-list">
+    <view wx:if="{{chats.length === 0}}" class="empty-state">
+      <view class="empty-circle"></view>
+      <text class="empty-text">暂无私信</text>
+    </view>
+    <view wx:for="{{chats}}" wx:key="id" class="chat-item"
+          bindtap="openChat" data-id="{{item.id}}">
+      <view class="chat-avatar" style="background: {{item.avatarColor}};">{{item.avatarChar}}</view>
+      <view class="chat-content">
+        <view class="chat-header">
+          <text class="chat-name">{{item.name}}</text>
+          <text class="chat-time">{{item.time}}</text>
+        </view>
+        <text class="chat-preview">{{item.lastMsg}}</text>
+      </view>
+      <view wx:if="{{item.unread > 0}}" class="chat-badge">{{item.unread}}</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,81 @@
+<view class="course-container">
+  <!-- 顶部周次选择器 -->
+  <view class="week-bar">
+    <view class="week-arrow" bindtap="prevWeek">
+      <van-icon name="arrow-left" size="32rpx" color="#666" />
+    </view>
+    <picker mode="selector" range="{{ weekOptions }}" value="{{ currentWeekIndex }}" bindchange="onWeekPick">
+      <view class="week-picker">
+        <text class="week-text">第 {{ weekLabel }} 周</text>
+        <van-icon name="arrow-down" size="24rpx" color="#999" />
+      </view>
+    </picker>
+    <view class="week-arrow" bindtap="nextWeek">
+      <van-icon name="arrow" size="32rpx" color="#666" />
+    </view>
+    <view class="week-today" bindtap="goToday">
+      <text>今天</text>
+    </view>
+  </view>
+
+  <!-- 日期表头行：左侧月份(可点) + 周一~周日 -->
+  <view class="day-header">
+    <picker mode="date" fields="month" value="{{ currentYearMonth }}" bindchange="onMonthPick" start="2022-09" end="{{ pickerEnd }}">
+      <view class="dh-month">
+        <text class="dh-month-num">{{ currentMonthNum }}月</text>
+        <text class="dh-semester">{{ semesterLabel }}</text>
+      </view>
+    </picker>
+    <view class="dh-days">
+      <view
+        wx:for="{{ weekDays }}"
+        wx:key="index"
+        class="dh-day {{ item.isToday ? 'dh-today' : '' }}"
+        bindtap="selectDay" data-index="{{ index }}">
+        <text class="dh-name">{{ item.name }}</text>
+        <text class="dh-date">{{ item.date }}</text>
+        <view wx:if="{{ item.courseCount > 0 }}" class="dh-dot"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 课程表主体 -->
+  <scroll-view scroll-y class="table-body" enhanced show-scrollbar="{{ false }}">
+    <view class="table-grid">
+      <!-- 左侧时段列：5大节 -->
+      <view class="period-col">
+        <view class="period-cell" wx:for="{{ periods }}" wx:key="index">
+          <text class="period-label">{{ item.label }}</text>
+          <text class="period-time">{{ item.time }}</text>
+        </view>
+      </view>
+
+      <!-- 右侧课程网格：周一至周日7天，等分不滚动 -->
+      <view class="course-area">
+        <view class="course-canvas">
+          <view wx:for="{{ 7 }}" wx:key="index" wx:for-index="dayIdx" class="day-col">
+            <!-- 该天所有课程块，绝对定位 -->
+            <block wx:for="{{ gridData[dayIdx] || [] }}" wx:key="subIndex" wx:for-item="course">
+              <view
+                class="course-card"
+                style="top: {{ course.top }}rpx; height: {{ course.height }}rpx; background: {{ course.color }};"
+                catchtap="viewCourseDetail"
+                data-course="{{ course }}"
+                data-day="{{ dayIdx }}">
+                <text class="cc-name">{{ course.name }}</text>
+                <text class="cc-teacher">{{ course.teacher }}</text>
+                <text class="cc-room">{{ course.location }}</text>
+                <text class="cc-week">{{ course.type }} · {{ weekLabel }}周</text>
+              </view>
+            </block>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部班级标签 -->
+  <view class="class-tag">
+    <text>{{ className }}</text>
+  </view>
+</view>

@@ -1,0 +1,171 @@
+<view class="page">
+  <!-- ===== 基本信息 ===== -->
+  <view class="section">
+    <view class="section-title">基本信息</view>
+    <view class="info-row">
+      <view class="info-cell half">
+        <text class="cell-label">性别</text>
+        <view class="cell-select" bindtap="toggleGender">
+          <text class="cell-value">{{ gender }}</text>
+          <text class="cell-arrow">▼</text>
+        </view>
+      </view>
+      <view class="info-cell half">
+        <text class="cell-label">年级</text>
+        <view class="cell-select" bindtap="toggleGrade">
+          <text class="cell-value">{{ grade }}</text>
+          <text class="cell-arrow">▼</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 性别下拉 -->
+  <view class="dropdown-pop" wx:if="{{ showGenderPick }}">
+    <view wx:for="{{ genderOptions }}" wx:key="index"
+      class="dropdown-item {{ gender === item ? 'active' : '' }}"
+      data-value="{{ item }}" bindtap="selectGender">{{ item }}</view>
+  </view>
+  <!-- 年级下拉 -->
+  <view class="dropdown-pop" wx:if="{{ showGradePick }}">
+    <view wx:for="{{ gradeOptions }}" wx:key="index"
+      class="dropdown-item {{ grade === item ? 'active' : '' }}"
+      data-value="{{ item }}" bindtap="selectGrade">{{ item }}</view>
+  </view>
+
+  <!-- ===== 身体指标 ===== -->
+  <view class="section">
+    <view class="section-title">身体指标</view>
+    <view class="input-row">
+      <view class="input-cell">
+        <text class="input-label">身高</text>
+        <view class="input-box">
+          <input type="digit" placeholder="请输入" value="{{ height }}" data-field="height" bindinput="onInput" bindblur="onCalc" placeholder-class="placeholder" />
+          <text class="input-unit">cm</text>
+        </view>
+      </view>
+      <view class="input-cell">
+        <text class="input-label">体重</text>
+        <view class="input-box">
+          <input type="digit" placeholder="请输入" value="{{ weight }}" data-field="weight" bindinput="onInput" bindblur="onCalc" placeholder-class="placeholder" />
+          <text class="input-unit">kg</text>
+        </view>
+      </view>
+    </view>
+    <!-- BMI展示 -->
+    <view class="bmi-row" wx:if="{{ bmi !== '--' }}">
+      <text class="bmi-label">BMI</text>
+      <text class="bmi-value">{{ bmi }}</text>
+      <text class="bmi-level {{ bmiLevel === '正常' ? 'level-normal' : (bmiLevel === '超重' || bmiLevel === '偏瘦' ? 'level-warn' : 'level-bad') }}">{{ bmiLevel }}</text>
+      <text class="bmi-score">({{ bmiScore }}分)</text>
+    </view>
+  </view>
+
+  <!-- ===== 体测项目 ===== -->
+  <view class="section">
+    <view class="section-title">体测项目</view>
+    
+    <!-- 肺活量 -->
+    <view class="item-row">
+      <text class="item-label">肺活量</text>
+      <view class="item-input-box">
+        <input type="digit" placeholder="请输入" value="{{ vitalCapacity }}" data-field="vitalCapacity" bindinput="onInput" bindblur="onCalc" placeholder-class="placeholder" />
+        <text class="input-unit">ml</text>
+      </view>
+      <text class="item-score {{ scoreVC >= 60 ? 'score-ok' : 'score-low' }}" wx:if="{{ hasResult }}">{{ scoreVC }}分</text>
+    </view>
+
+    <!-- 坐位体前屈 -->
+    <view class="item-row">
+      <text class="item-label">坐位体前屈</text>
+      <view class="item-input-box">
+        <input type="digit" placeholder="请输入" value="{{ sitAndReach }}" data-field="sitAndReach" bindinput="onInput" bindblur="onCalc" placeholder-class="placeholder" />
+        <text class="input-unit">cm</text>
+      </view>
+      <text class="item-score {{ scoreSR >= 60 ? 'score-ok' : 'score-low' }}" wx:if="{{ hasResult }}">{{ scoreSR }}分</text>
+    </view>
+
+    <!-- 立定跳远 -->
+    <view class="item-row">
+      <text class="item-label">立定跳远</text>
+      <view class="item-input-box">
+        <input type="digit" placeholder="请输入" value="{{ longJump }}" data-field="longJump" bindinput="onInput" bindblur="onCalc" placeholder-class="placeholder" />
+        <text class="input-unit">cm</text>
+      </view>
+      <text class="item-score {{ scoreLJ >= 60 ? 'score-ok' : 'score-low' }}" wx:if="{{ hasResult }}">{{ scoreLJ }}分</text>
+    </view>
+
+    <!-- 50米跑 -->
+    <view class="item-row">
+      <text class="item-label">50米跑</text>
+      <view class="item-input-box">
+        <input type="digit" placeholder="请输入" value="{{ run50m }}" data-field="run50m" bindinput="onInput" bindblur="onCalc" placeholder-class="placeholder" />
+        <text class="input-unit">秒</text>
+      </view>
+      <text class="item-score {{ score50 >= 60 ? 'score-ok' : 'score-low' }}" wx:if="{{ hasResult }}">{{ score50 }}分</text>
+    </view>
+
+    <!-- 800/1000米 -->
+    <view class="item-row">
+      <text class="item-label">{{ gender === '男' ? '1000米' : '800米' }}</text>
+      <view class="item-input-box">
+        <input type="digit" placeholder="秒数(如225=3'45)" value="{{ runDuration }}" data-field="runDuration" bindinput="onInput" bindblur="onCalc" placeholder-class="placeholder" />
+        <text class="input-unit">秒</text>
+      </view>
+      <text class="item-score {{ scoreRun >= 60 ? 'score-ok' : 'score-low' }}" wx:if="{{ hasResult }}">{{ scoreRun }}分</text>
+    </view>
+
+    <!-- 引体向上/仰卧起坐 -->
+    <view class="item-row">
+      <text class="item-label">{{ gender === '男' ? '引体向上' : '仰卧起坐' }}</text>
+      <view class="item-input-box">
+        <input type="number" placeholder="请输入" value="{{ situps }}" data-field="situps" bindinput="onInput" bindblur="onCalc" placeholder-class="placeholder" />
+        <text class="input-unit">个</text>
+      </view>
+      <text class="item-score {{ scoreUp >= 60 ? 'score-ok' : 'score-low' }}" wx:if="{{ hasResult }}">{{ scoreUp }}分</text>
+    </view>
+  </view>
+
+  <!-- ===== 操作按钮 ===== -->
+  <view class="actions">
+    <view class="btn btn-calc" bindtap="onCalc">
+      <text class="btn-text">计算成绩</text>
+    </view>
+    <view class="btn-row">
+      <view class="btn btn-half btn-clear" bindtap="onClear">
+        <text class="btn-text">一键清空</text>
+      </view>
+      <view class="btn btn-half btn-save" bindtap="onSave">
+        <text class="btn-text">保存数据</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 总成绩展示 ===== -->
+  <view class="result-card" wx:if="{{ hasResult }}">
+    <view class="result-circle">
+      <text class="result-num">{{ totalScore }}</text>
+      <text class="result-unit">分</text>
+    </view>
+    <view class="result-right">
+      <text class="result-level {{ totalLevel === '优秀' ? 'lv-excellent' : (totalLevel === '良好' ? 'lv-good' : (totalLevel === '及格' ? 'lv-pass' : 'lv-fail')) }}">{{ totalLevel }}</text>
+      <text class="result-tip" wx:if="{{ totalLevel === '不及格' }}">还需 {{ 60 - totalScore }} 分达到及格线</text>
+      <text class="result-tip" wx:if="{{ totalLevel === '优秀' }}">恭喜！体质健康优秀！</text>
+      <text class="result-tip" wx:if="{{ totalLevel === '良好' }}">不错，继续保持！</text>
+      <text class="result-tip" wx:if="{{ totalLevel === '及格' }}">已达标，继续加油！</text>
+    </view>
+  </view>
+
+  <!-- 体测说明 -->
+  <view class="tips-card">
+    <view class="tips-title">评分标准说明</view>
+    <view class="tips-content">
+      <text>• BMI：15%权重  |  肺活量：15%  |  50米跑：20%\n</text>
+      <text>• 坐位体前屈：10%  |  立定跳远：10%\n</text>
+      <text>• {{ gender === '男' ? '1000米' : '800米' }}：20%  |  {{ gender === '男' ? '引体向上' : '仰卧起坐' }}：10%\n</text>
+      <text>• 参照《国家学生体质健康标准》大学评分表\n</text>
+      <text wx:if="{{ gender === '男' }}">• 1000米输入总秒数，如3分45秒=225</text>
+      <text wx:if="{{ gender === '女' }}">• 800米输入总秒数，如3分18秒=198</text>
+    </view>
+  </view>
+</view>

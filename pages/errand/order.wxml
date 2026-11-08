@@ -1,0 +1,175 @@
+<scroll-view scroll-y class="order-page">
+  <!-- ========== 1. 服务类型选择 ========== -->
+  <view class="section">
+    <view class="section-title">
+      <view class="title-dot"></view>
+      <text>跑腿类型</text>
+      <text class="title-hint">选择你需要的服务</text>
+    </view>
+    <view class="cat-grid">
+      <view
+        wx:for="{{ categories }}"
+        wx:key="key"
+        class="cat-card {{ selectedCategory === item.key ? 'cat-selected' : '' }}"
+        style="{{ selectedCategory === item.key ? 'border-color:' + item.color + ';background:' + item.color + '10' : '' }}"
+        data-key="{{ item.key }}"
+        bindtap="selectCategory"
+      >
+        <view class="cat-icon-wrap" style="background: {{ item.color }}15;">
+          <van-icon name="{{ item.icon }}" size="48rpx" color="{{ item.color }}" />
+        </view>
+        <text class="cat-name" style="color: {{ selectedCategory === item.key ? item.color : '#333' }}">{{ item.name }}</text>
+        <text class="cat-desc">{{ item.desc }}</text>
+        <view wx:if="{{ selectedCategory === item.key }}" class="cat-check" style="background: {{ item.color }};">
+          <van-icon name="success" size="24rpx" color="#fff" />
+        </view>
+        <text class="cat-price" style="color: {{ item.color }}">起 ¥{{ item.basePrice }}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ========== 2. 任务详情 ========== -->
+  <view class="section">
+    <view class="section-title">
+      <view class="title-dot" style="background: #5cb85c;"></view>
+      <text>任务详情</text>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">任务标题</text>
+      <input
+        class="form-input"
+        value="{{ taskTitle }}"
+        placeholder="简要描述，如：帮我带份黄焖鸡"
+        maxlength="30"
+        bindinput="onTitleInput"
+      />
+    </view>
+    <view class="form-item">
+      <text class="form-label">详细描述</text>
+      <textarea
+        class="form-textarea"
+        value="{{ taskDetail }}"
+        placeholder="具体说明需求（品牌、数量、规格等），越详细接单人越快响应"
+        maxlength="200"
+        auto-height
+        bindinput="onDetailInput"
+      />
+    </view>
+  </view>
+
+  <!-- ========== 3. 起止地点 ========== -->
+  <view class="section">
+    <view class="section-title">
+      <view class="title-dot" style="background: #f0ad4e;"></view>
+      <text>起止地点</text>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">
+        <van-icon name="location-o" size="28rpx" color="#367BFF" style="margin-right:6rpx;" />起点
+      </text>
+      <picker mode="selector" range="{{ commonPlaces }}" value="-1" bindchange="onStartPlaceChange">
+        <view class="form-picker">
+          <text class="{{ !startAddr ? 'placeholder' : '' }}">{{ startAddr || '选择出发地点' }}</text>
+          <van-icon name="arrow" size="28rpx" color="#999" />
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">
+        <van-icon name="flag-o" size="28rpx" color="#e67e22" style="margin-right:6rpx;" />目的地
+      </text>
+      <picker mode="selector" range="{{ commonPlaces }}" value="-1" bindchange="onEndPlaceChange">
+        <view class="form-picker">
+          <text class="{{ !endAddr ? 'placeholder' : '' }}">{{ endAddr || '选择送达地点' }}</text>
+          <van-icon name="arrow" size="28rpx" color="#999" />
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">期望时间</text>
+      <picker mode="multiSelector" range="{{ timeRange }}" bindchange="onStartTimeChange">
+        <view class="form-picker">
+          <text class="{{ timeText === '请选择' ? 'placeholder' : '' }}">{{ timeText }}</text>
+          <van-icon name="arrow" size="28rpx" color="#999" />
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- ========== 4. 备注与打赏 ========== -->
+  <view class="section">
+    <view class="section-title">
+      <view class="title-dot" style="background: #e65454;"></view>
+      <text>备注与打赏</text>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">备注</text>
+      <input
+        class="form-input"
+        value="{{ remark }}"
+        placeholder="补充说明（选填）"
+        maxlength="50"
+        bindinput="onRemarkInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">追加打赏</text>
+      <view class="tip-row">
+        <view
+          wx:for="{{ tips }}"
+          wx:key="value"
+          class="tip-chip {{ tipAmount === item.value ? 'tip-active' : '' }}"
+          data-value="{{ item.value }}"
+          bindtap="selectTip"
+        >
+          <text>{{ item.label }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 价格明细 -->
+    <view class="price-detail">
+      <view class="price-row">
+        <text class="price-label">基础费用</text>
+        <text class="price-val">¥{{ basePrice }}</text>
+      </view>
+      <view class="price-row" wx:if="{{ tipAmount > 0 }}">
+        <text class="price-label">打赏</text>
+        <text class="price-val">+¥{{ tipAmount }}</text>
+      </view>
+      <view class="price-row price-total">
+        <text class="price-label">合计</text>
+        <text class="price-val total">¥{{ totalPrice }}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部提交 -->
+  <view class="submit-bar">
+    <view class="submit-info">
+      <text class="submit-price">¥{{ totalPrice }}</text>
+      <text class="submit-count">{{ selectedCategory ? categories[selectedCategory].name : '跑腿' }}订单</text>
+    </view>
+    <button class="submit-btn errand-btn" bindtap="submitOrder">发布跑腿</button>
+  </view>
+  <view style="height: 140rpx;"></view>
+</scroll-view>
+
+<!-- 支付成功提示 -->
+<view class="pay-modal" wx:if="{{ showPayModal }}">
+  <view class="modal-mask"></view>
+  <view class="pay-content">
+    <van-icon name="checked" size="100rpx" color="#5cb85c" />
+    <text class="pay-title">发布成功</text>
+    <text class="pay-sub">跑腿订单已发布，等待接单中</text>
+    <text class="pay-no">订单号：{{ latestOrderNo }}</text>
+    <button class="pay-back" bindtap="backToList">返回列表</button>
+    <text class="pay-continue" bindtap="continueOrder">继续发布</text>
+  </view>
+</view>

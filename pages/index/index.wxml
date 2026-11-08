@@ -1,0 +1,223 @@
+<view class="index-container">
+  <!-- 首页公告横幅 -->
+  <view wx:if="{{banners.length > 0}}" class="home-banner">
+    <van-icon name="volume" size="30rpx" color="#2E5496"/>
+    <swiper class="home-banner-swiper" vertical="{{true}}" autoplay="{{true}}" interval="3500" circular="{{true}}">
+      <swiper-item wx:for="{{banners}}" wx:key="id" class="home-banner-item">
+        <text class="home-banner-title">{{item.title}}</text>
+        <text wx:if="{{item.content}}" class="home-banner-content">{{item.content}}</text>
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <view class="search-section">
+    <view class="van-search" style="background: #ffffff;">
+      <view class="van-search__content van-search__content--round">
+        <view class="van-field">
+          <view class="van-field__body">
+            <view class="van-field__left-icon">
+              <van-icon name="search" size="28rpx" color="#969799" />
+            </view>
+            <input
+              class="van-field__control"
+              value="{{ searchValue }}"
+              placeholder="搜索你想找什么"
+              placeholder-class="van-field__placeholder"
+              confirm-type="search"
+              bindinput="onInput"
+              bindconfirm="onSearch"
+              bindfocus="onSearchFocus"
+              bindblur="onSearchBlur"
+            />
+            <view wx:if="{{ searchValue }}" class="van-field__right-icon" catchtap="onClear">
+              <view class="clear-circle">
+                <van-icon name="clear" size="20rpx" color="#fff" />
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 搜索结果面板 -->
+    <view class="search-panel" wx:if="{{ showSearchPanel && searchValue }}">
+      <view wx:if="{{ searchResults.length > 0 }}" class="search-list">
+        <view
+          wx:for="{{ searchResults }}"
+          wx:key="index"
+          class="search-item"
+          data-item="{{ item }}"
+          bindtap="onTapResult"
+        >
+          <view class="search-item-left">
+            <van-icon name="{{ item.icon }}" size="36rpx" color="#367BFF" />
+            <text class="search-item-name">{{ item.name }}</text>
+          </view>
+          <view class="search-item-right">
+            <text class="search-item-tag" wx:if="{{ item.type === 'feature' }}">功能</text>
+            <text class="search-item-tag tag-course" wx:if="{{ item.type === 'course' }}">课程</text>
+            <van-icon name="arrow" size="28rpx" color="#c8c9cc" />
+          </view>
+        </view>
+      </view>
+      <view wx:else class="search-empty">
+        <text>未找到相关内容</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索遮罩 -->
+  <view
+    class="search-mask"
+    wx:if="{{ showSearchPanel && searchValue }}"
+    catchtap="onClear"
+  ></view>
+
+  <view class="feature-section">
+    <scroll-view scroll-x class="feature-scroll">
+      <view class="feature-grid">
+        <view wx:for="{{ features }}" wx:key="index" class="feature-item" bindtap="navigateTo" data-path="{{ item.path }}">
+          <van-icon name="{{ item.icon }}" size="48rpx" color="#367BFF" custom-class="feature-icon-custom" />
+          <text class="feature-text">{{ item.name }}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="section-wrapper">
+    <view class="section-header">
+      <van-icon name="calendar-o" size="36rpx" color="#367BFF" />
+      <text class="section-title">今日课程</text>
+      <text class="more-link" bindtap="goToCourse">更多</text>
+    </view>
+    <view class="schedule-section">
+      <scroll-view scroll-x class="schedule-scroll" wx:if="{{ todayCourses.length > 0 }}">
+        <view class="schedule-grid">
+          <view wx:for="{{ todayCourses }}" wx:key="index" class="schedule-card">
+            <text class="schedule-name">{{ item.name }}</text>
+            <text class="schedule-time">{{ item.time }}</text>
+            <text class="schedule-location">{{ item.location }}</text>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="no-schedule" wx:if="{{ todayCourses.length === 0 }}">
+        <text>今日无课程安排</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-wrapper">
+    <view class="section-header">
+      <van-icon name="clock-o" size="36rpx" color="#367BFF" />
+      <text class="section-title">倒计时</text>
+      <text class="more-link" bindtap="openHolidayList">更多</text>
+    </view>
+    <view class="countdown-section">
+      <view class="countdown-grid">
+        <view class="countdown-card">
+          <text class="countdown-label">距离周末</text>
+          <text class="countdown-value">{{ weekendDays }}</text>
+          <text class="countdown-unit">天</text>
+        </view>
+        <view class="countdown-card">
+          <text class="countdown-label">距离{{ nextHolidayName }}</text>
+          <text class="countdown-value">{{ holidayDays }}</text>
+          <text class="countdown-unit">天</text>
+        </view>
+        <view class="countdown-card">
+          <text class="countdown-label">距离暑假</text>
+          <text class="countdown-value">{{ vacationDays }}</text>
+          <text class="countdown-unit">天</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-wrapper">
+    <view class="section-header">
+      <van-icon name="gold-coin-o" size="36rpx" color="#367BFF" />
+      <text class="section-title">宿舍水电</text>
+      <text class="recharge-link" bindtap="goToRecharge">充值</text>
+    </view>
+    <view class="balance-section">
+      <view class="balance-grid">
+        <view class="balance-card">
+          <van-icon name="balance-pay" size="60rpx" color="#367BFF" custom-class="balance-icon-custom" />
+          <text class="balance-label">水费余额</text>
+          <text class="balance-value">{{ waterBalance }}元</text>
+        </view>
+        <view class="balance-card">
+          <van-icon name="fire-o" size="60rpx" color="#367BFF" custom-class="balance-icon-custom" />
+          <text class="balance-label">电费余额</text>
+          <text class="balance-value">{{ electricBalance }}元</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-wrapper">
+    <view class="section-header">
+      <van-icon name="chat-o" size="36rpx" color="#367BFF" />
+      <text class="section-title">校园墙</text>
+      <text class="more-link" bindtap="goToWall">更多</text>
+    </view>
+    <view class="wall-section">
+      <view class="post-list" wx:if="{{ posts.length > 0 }}">
+        <view wx:for="{{ posts }}" wx:key="index" class="post-card">
+          <view class="post-user">
+            <van-icon name="user-o" size="40rpx" color="#999" custom-class="user-avatar-custom" />
+            <text class="user-name">{{ item.userName }}</text>
+          </view>
+          <text class="post-content">{{ item.content }}</text>
+          <view class="post-interaction">
+            <view class="interaction-item">
+              <van-icon name="like-o" size="28rpx" color="#666" />
+              <text>{{ item.likes }}</text>
+            </view>
+            <view class="interaction-item">
+              <van-icon name="comment-o" size="28rpx" color="#666" />
+              <text>{{ item.comments }}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="no-post" wx:if="{{ posts.length === 0 }}">
+        <text>暂无帖子</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 节假日倒计时弹窗 -->
+<view class="holiday-modal" wx:if="{{ showHolidayModal }}">
+  <view class="holiday-mask" bindtap="closeHolidayList"></view>
+  <view class="holiday-content">
+    <view class="holiday-header">
+      <text class="holiday-title">节假日倒计时</text>
+      <view class="holiday-close" bindtap="closeHolidayList">
+        <van-icon name="cross" size="32rpx" color="#999" />
+      </view>
+    </view>
+    <scroll-view scroll-y class="holiday-list-scroll">
+      <view class="holiday-list">
+        <view
+          wx:for="{{ holidayList }}"
+          wx:key="date"
+          class="holiday-item {{ item.daysLeft === 0 ? 'holiday-passed' : '' }}"
+        >
+          <view class="holiday-left">
+            <van-icon class="holiday-icon" name="{{ item.icon }}" size="44rpx" color="#367BFF" />
+            <view class="holiday-info">
+              <text class="holiday-name">{{ item.name }}</text>
+              <text class="holiday-type">{{ item.type }} · {{ item.dateStr }}</text>
+            </view>
+          </view>
+          <view class="holiday-right {{ item.daysLeft <= 7 && item.daysLeft > 0 ? 'holiday-soon' : '' }}">
+            <text class="holiday-days">{{ item.statusText }}</text>
+            <text wx:if="{{ item.daysLeft > 0 }}" class="holiday-count">{{ item.daysLeft }}天</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

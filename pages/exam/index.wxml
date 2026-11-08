@@ -1,0 +1,103 @@
+<view class="page">
+  <!-- ===== 筛选区 ===== -->
+  <view class="filter-card">
+    <!-- 学年选择 -->
+    <view class="filter-row">
+      <text class="filter-label">学　年</text>
+      <view class="filter-select" bindtap="toggleYearPicker">
+        <text class="select-text">{{ academicYear }}</text>
+        <text class="select-arrow">▼</text>
+      </view>
+    </view>
+
+    <!-- 学年下拉列表 -->
+    <view class="dropdown" wx:if="{{ showYearPicker }}">
+      <view
+        wx:for="{{ academicYears }}"
+        wx:key="index"
+        class="dropdown-option {{ academicYear === item ? 'active' : '' }}"
+        data-value="{{ item }}"
+        bindtap="onSelectYear"
+      >{{ item }}</view>
+    </view>
+
+    <!-- 学期选择 -->
+    <view class="filter-row" style="margin-top: 20rpx;">
+      <text class="filter-label">学　期</text>
+      <view class="filter-select" bindtap="toggleSemesterPicker">
+        <text class="select-text">{{ semester }}</text>
+        <text class="select-arrow">▼</text>
+      </view>
+    </view>
+
+    <!-- 学期下拉列表 -->
+    <view class="dropdown" wx:if="{{ showSemesterPicker }}">
+      <view
+        wx:for="{{ semesters }}"
+        wx:key="index"
+        class="dropdown-option {{ semester === item ? 'active' : '' }}"
+        data-value="{{ item }}"
+        bindtap="onSelectSemester"
+      >{{ item }}</view>
+    </view>
+
+    <!-- 查询按钮 -->
+    <view class="query-btn" bindtap="onQuery">
+      <text class="query-btn-text">查询考试信息</text>
+    </view>
+  </view>
+
+  <!-- ===== 查询结果 ===== -->
+  <view wx:if="{{ hasQueried }}" class="result-area">
+    <view class="result-header">
+      <text class="result-title">考试列表</text>
+      <text class="result-count">共 {{ displayExams.length }} 场</text>
+    </view>
+
+    <!-- 考试卡片 -->
+    <view
+      wx:for="{{ displayExams }}"
+      wx:key="index"
+      class="exam-card {{ item.statusType === 'upcoming' ? 'card-upcoming' : 'card-done' }}"
+    >
+      <!-- 左侧状态条 -->
+      <view class="card-stripe {{ item.statusType === 'upcoming' ? 'stripe-upcoming' : 'stripe-done' }}"></view>
+
+      <view class="card-body">
+        <!-- 第一行：课程名 + 状态 -->
+        <view class="card-row1">
+          <text class="course-name">{{ item.courseName }}</text>
+          <text class="status-tag {{ item.statusType === 'upcoming' ? 'tag-upcoming' : 'tag-done' }}">{{ item.status }}</text>
+        </view>
+
+        <!-- 第二行：考试名称 -->
+        <view class="card-row2">
+          <text class="exam-name-label">考试名称</text>
+          <text class="exam-name-value">{{ item.examName }}</text>
+        </view>
+
+        <!-- 第三行：考试时间 -->
+        <view class="card-row3">
+          <text class="info-label">考试时间</text>
+          <text class="info-text time-text">{{ item.time }}</text>
+        </view>
+
+        <!-- 第四行：考试地点 -->
+        <view class="card-row4">
+          <text class="info-label">考试地点</text>
+          <text class="info-text">{{ item.location }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty" wx:if="{{ displayExams.length === 0 }}">
+      <text class="empty-text">暂无考试信息</text>
+    </view>
+  </view>
+
+  <!-- 未查询时的引导 -->
+  <view class="guide" wx:if="{{ !hasQueried }}">
+    <text class="guide-text">请选择学年和学期后，点击查询按钮</text>
+  </view>
+</view>

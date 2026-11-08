@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "快递代取下单",
+  "usingComponents": {
+    "van-icon": "/miniprogram_npm/@vant/weapp/icon/index"
+  }
+}

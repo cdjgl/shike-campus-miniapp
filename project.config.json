@@ -1,0 +1,43 @@
+{
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "uglifyFileName": false,
+    "enhance": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./miniprogram_npm"
+      }
+    ],
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "useCompilerPlugins": false,
+    "minifyWXML": true,
+    "useStaticServer": true,
+    "compileWorklet": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": true,
+    "minifyWXSS": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "condition": true,
+    "swc": false,
+    "disableSWC": true,
+    "ignoreDevUnusedFiles": false,
+    "ignoreUploadUnusedFiles": false
+  },
+  "compileType": "miniprogram",
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "appid": "wx44e5d664454fe11b",
+  "editorSetting": {},
+  "libVersion": "3.16.1"
+}

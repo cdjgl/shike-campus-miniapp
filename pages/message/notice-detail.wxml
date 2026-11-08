@@ -1,0 +1,42 @@
+<!-- 通知详情页 -->
+<view class="nd-container">
+  <!-- 导航栏 -->
+  <view class="nd-navbar" style="padding-top:{{statusBarHeight}}px;height:{{statusBarHeight + navBarHeight}}px">
+    <view class="nd-nav-body" style="height:{{navBarHeight}}px">
+      <view class="nd-nav-left" bindtap="goBack">
+        <text class="nd-back">‹</text>
+      </view>
+      <view class="nd-nav-center">
+        <text class="nd-nav-title">通知详情</text>
+      </view>
+      <view class="nd-nav-right"></view>
+    </view>
+  </view>
+
+  <!-- 内容区 -->
+  <scroll-view scroll-y class="nd-content">
+    <view class="nd-card">
+      <!-- 类型标签 -->
+      <view class="nd-tag" style="background: {{notice.typeColor || '#367BFF'}};">{{notice.icon || '系统通知'}}</view>
+
+      <!-- 标题 -->
+      <text class="nd-title">{{notice.title}}</text>
+
+      <!-- 时间 -->
+      <view class="nd-meta">
+        <text class="nd-time">{{notice.time}}</text>
+      </view>
+
+      <!-- 分割线 -->
+      <view class="nd-divider"></view>
+
+      <!-- 正文内容 -->
+      <view class="nd-body">
+        <rich-text nodes="{{notice.content}}"></rich-text>
+      </view>
+
+      <!-- 关联内容 -->
+      <view wx:if="{{notice.link}}" class="nd-link" bindtap="goLink">查看相关内容 ›</view>
+    </view>
+  </scroll-view>
+</view>

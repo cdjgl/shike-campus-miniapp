@@ -1,0 +1,97 @@
+<view class="page-container">
+  <scroll-view scroll-y class="main-content">
+
+    <!-- 顶部品牌区 -->
+    <view class="brand-section">
+      <view class="brand-bg"></view>
+      <view class="brand-content">
+        <view class="logo-wrap">
+          <view class="logo-circle">
+            <text class="logo-text">拾</text>
+          </view>
+        </view>
+        <text class="app-name">拾刻校园通</text>
+        <text class="app-version">v1.0.0</text>
+      </view>
+    </view>
+
+    <!-- 应用介绍 -->
+    <view class="section-card">
+      <view class="section-header">
+        <view class="header-line"></view>
+        <text class="header-title">应用介绍</text>
+      </view>
+      <text class="section-desc">
+        拾刻校园通是一款专为大学生打造的校园生活服务平台，集课程查询、成绩查询、校园墙、快递代拿、跑腿服务、失物招领、体测计算等功能于一体。我们致力于让每一位同学的校园生活更加便捷、高效、精彩。
+      </text>
+    </view>
+
+    <!-- 功能特色 -->
+    <view class="section-card">
+      <view class="section-header">
+        <view class="header-line"></view>
+        <text class="header-title">功能特色</text>
+      </view>
+      <view class="feature-grid">
+        <view class="feature-item">
+          <view class="feature-icon" style="background:#e8f4ff;">
+            <van-icon name="notes-o" size="40rpx" color="#367BFF" />
+          </view>
+          <text class="feature-title">课程成绩</text>
+          <text class="feature-desc">查询课程与成绩</text>
+        </view>
+        <view class="feature-item">
+          <view class="feature-icon" style="background:#fff0e8;">
+            <van-icon name="chat-o" size="40rpx" color="#fa9123" />
+          </view>
+          <text class="feature-title">校园社交</text>
+          <text class="feature-desc">校园墙互动交流</text>
+        </view>
+        <view class="feature-item">
+          <view class="feature-icon" style="background:#e8fff0;">
+            <van-icon name="logistics" size="40rpx" color="#07c160" />
+          </view>
+          <text class="feature-title">生活服务</text>
+          <text class="feature-desc">快递代拿跑腿</text>
+        </view>
+        <view class="feature-item">
+          <view class="feature-icon" style="background:#f0e8ff;">
+            <van-icon name="setting-o" size="40rpx" color="#8a6dff" />
+          </view>
+          <text class="feature-title">校园工具</text>
+          <text class="feature-desc">失物招领体测</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系我们 -->
+    <view class="section-card">
+      <view class="section-header">
+        <view class="header-line"></view>
+        <text class="header-title">联系我们</text>
+      </view>
+      <view class="contact-list">
+        <view class="contact-row">
+          <van-icon name="envelop-o" size="36rpx" color="#367BFF" />
+          <text class="contact-label">联系邮箱（示例）</text>
+          <text class="contact-value">support@example.com</text>
+        </view>
+        <view class="contact-row">
+          <van-icon name="chat-o" size="36rpx" color="#367BFF" />
+          <text class="contact-label">意见反馈</text>
+          <view class="feedback-link" bindtap="goToFeedback">
+            <text>去反馈</text>
+            <text class="arrow">›</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部 -->
+    <view class="footer">
+      <text class="footer-text">拾刻校园通 · 开源项目</text>
+      <text class="footer-sub">MIT License</text>
+    </view>
+
+  </scroll-view>
+</view>

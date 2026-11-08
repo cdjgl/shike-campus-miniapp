@@ -1,0 +1,100 @@
+<view class="admin-container">
+  <!-- Tab 切换 -->
+  <scroll-view scroll-x class="tab-scroll">
+    <view class="tab-row">
+      <view wx:for="{{tabs}}" wx:key="key" class="tab-item {{activeTab === item.key ? 'active' : ''}}"
+            bindtap="switchTab" data-tab="{{item.key}}">{{item.name}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 帖子审核 -->
+  <view wx:if="{{activeTab === 'posts'}}" class="section">
+    <view wx:if="{{posts.length === 0}}" class="empty">暂无帖子</view>
+    <view wx:for="{{posts}}" wx:key="id" class="card">
+      <view class="card-top">
+        <text class="card-pub">{{item.publisher}}</text>
+        <text wx:if="{{item.removed}}" class="badge badge-removed">已下架</text>
+        <text wx:else class="badge badge-normal">正常</text>
+      </view>
+      <text class="card-text">{{item.content}}</text>
+      <view class="card-ops">
+        <view wx:if="{{!item.removed}}" class="op op-danger" bindtap="postRemove" data-id="{{item.id}}">下架</view>
+        <view wx:else class="op" bindtap="postRestore" data-id="{{item.id}}">恢复</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 评论审核 -->
+  <view wx:if="{{activeTab === 'comments'}}" class="section">
+    <view wx:if="{{comments.length === 0}}" class="empty">暂无评论</view>
+    <view wx:for="{{comments}}" wx:key="index" class="card">
+      <view class="card-top">
+        <text class="card-pub">{{item.user}}</text>
+        <text class="badge badge-normal">{{item.kind}}</text>
+      </view>
+      <text class="card-text">{{item.text}}</text>
+      <view class="card-ops">
+        <view class="op op-danger" bindtap="commentDelete" data-post="{{item.postId}}" data-text="{{item.text}}">删除</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 举报处理 -->
+  <view wx:if="{{activeTab === 'reports'}}" class="section">
+    <view wx:if="{{reports.length === 0}}" class="empty">暂无待处理举报</view>
+    <view wx:for="{{reports}}" wx:key="id" class="card">
+      <view class="card-top">
+        <text class="card-pub">{{item.reporter}}</text>
+        <text class="badge badge-normal">{{item.targetType === 'post' ? '举报帖子' : '举报评论'}}</text>
+      </view>
+      <text class="card-text">原因：{{item.reason}}</text>
+      <text class="card-text">内容：{{item.targetText}}</text>
+      <view class="card-ops">
+        <view class="op op-danger" bindtap="reportAccept" data-id="{{item.id}}">受理</view>
+        <view class="op" bindtap="reportReject" data-id="{{item.id}}">驳回</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 公告发布 -->
+  <view wx:if="{{activeTab === 'banner'}}" class="section">
+    <view class="form-box">
+      <input class="f-input" placeholder="公告标题" value="{{bannerTitle}}" data-field="bannerTitle" bindinput="onBannerInput"/>
+      <textarea class="f-area" placeholder="公告内容（选填）" value="{{bannerContent}}" data-field="bannerContent" bindinput="onBannerInput"/>
+      <view class="op op-primary" bindtap="bannerAdd">发布到首页公告</view>
+    </view>
+    <view class="sub-title">当前公告（{{banners.length}}）</view>
+    <view wx:for="{{banners}}" wx:key="id" class="card">
+      <view class="card-top"><text class="card-pub">{{item.title}}</text></view>
+      <text class="card-text">{{item.content}}</text>
+      <view class="card-ops"><view class="op op-danger" bindtap="bannerDelete" data-id="{{item.id}}">撤回</view></view>
+    </view>
+  </view>
+
+  <!-- 账号管理 -->
+  <view wx:if="{{activeTab === 'account'}}" class="section">
+    <view wx:for="{{accounts}}" wx:key="account" class="card">
+      <view class="card-top">
+        <text class="card-pub">{{item.account}}</text>
+        <text class="badge badge-normal">{{item.roleText}}</text>
+      </view>
+      <view class="card-ops">
+        <view wx:if="{{!item.disabled}}" class="op op-danger" bindtap="toggleDisable" data-acc="{{item.account}}" data-disabled="{{item.disabled}}">禁用</view>
+        <view wx:else class="op" bindtap="toggleDisable" data-acc="{{item.account}}" data-disabled="{{item.disabled}}">启用</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据看板 -->
+  <view wx:if="{{activeTab === 'stats'}}" class="section">
+    <view class="stats-grid">
+      <view class="stat-box"><text class="s-num">{{stats.postCount}}</text><text class="s-label">帖子总数</text></view>
+      <view class="stat-box"><text class="s-num">{{stats.removedCount}}</text><text class="s-label">已下架</text></view>
+      <view class="stat-box"><text class="s-num">{{stats.commentCount}}</text><text class="s-label">评论总数</text></view>
+      <view class="stat-box"><text class="s-num">{{stats.reportCount}}</text><text class="s-label">待处理举报</text></view>
+      <view class="stat-box"><text class="s-num">{{stats.accountCount}}</text><text class="s-label">注册账号</text></view>
+      <view class="stat-box"><text class="s-num">{{stats.bannerCount}}</text><text class="s-label">公告数</text></view>
+      <view class="stat-box"><text class="s-num">{{stats.orderCount}}</text><text class="s-label">服务订单</text></view>
+    </view>
+  </view>
+</view>

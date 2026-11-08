@@ -1,0 +1,336 @@
+<!-- 校区选择弹窗 -->
+<view class="campus-modal" wx:if="{{ showCampusModal }}">
+  <view class="modal-mask" bindtap="closeCampusModal"></view>
+  <view class="modal-content">
+    <view class="modal-title">请选择校区</view>
+    <view class="modal-subtitle">选择对应校区后进入服务页面</view>
+    <view class="campus-list">
+      <view
+        wx:for="{{ campuses }}"
+        wx:key="id"
+        class="campus-item {{ selectedCampusId === item.id ? 'campus-active' : '' }}"
+        data-id="{{ item.id }}"
+        bindtap="selectCampus"
+      >
+        <view class="campus-info">
+          <text class="campus-name">{{ item.name }}</text>
+          <text class="campus-addr">{{ item.address }}</text>
+        </view>
+        <van-icon wx:if="{{ selectedCampusId === item.id }}" name="success" size="40rpx" color="#367BFF" />
+      </view>
+    </view>
+    <view class="modal-btn-wrap">
+      <button class="modal-confirm" bindtap="confirmCampus">确认进入</button>
+    </view>
+  </view>
+</view>
+
+<!-- 主页面 -->
+<view class="express-container">
+  <!-- 顶部校区栏 -->
+  <view class="top-campus-bar">
+    <view class="campus-tag" bindtap="changeCampus">
+      <van-icon name="location-o" size="32rpx" color="#367BFF" />
+      <text class="campus-label">{{ currentCampus.name }}</text>
+      <van-icon name="arrow-down" size="28rpx" color="#999" />
+    </view>
+  </view>
+
+  <!-- 惩罚提示条 -->
+  <view class="penalty-banner" wx:if="{{ penaltyInfo }}">
+    <van-icon name="warning-o" size="32rpx" color="#fff" />
+    <view class="penalty-text">
+      <text>接单受限</text>
+      <text class="penalty-sub">还剩 {{ penaltyInfo.remainMin }} 分钟解除</text>
+    </view>
+  </view>
+
+  <!-- 功能入口行 -->
+  <view class="service-row">
+    <view
+      wx:for="{{ services }}"
+      wx:key="key"
+      class="service-item"
+      data-key="{{ item.key }}"
+      bindtap="onServiceTap"
+    >
+      <view class="service-icon" style="background: {{ item.bg }};">
+        <van-icon name="{{ item.icon }}" size="44rpx" color="#fff" />
+      </view>
+      <text class="service-name">{{ item.name }}</text>
+    </view>
+  </view>
+
+  <!-- 分类选项卡 -->
+  <view class="tab-bar">
+    <view
+      wx:for="{{ tabs }}"
+      wx:key="key"
+      class="tab-item {{ activeTab === item.key ? 'tab-active' : '' }}"
+      data-key="{{ item.key }}"
+      bindtap="switchTab"
+    >
+      <text>{{ item.label }}</text>
+      <view wx:if="{{ item.badge > 0 }}" class="tab-badge">{{ item.badge }}</view>
+    </view>
+  </view>
+
+  <!-- 订单列表 -->
+  <scroll-view scroll-y class="order-list" wx:if="{{ filteredOrders.length > 0 }}">
+    <view
+      wx:for="{{ filteredOrders }}"
+      wx:key="id"
+      class="order-swipe-wrap"
+      data-id="{{ item.id }}"
+    >
+      <view
+        class="order-card {{ item._swiping ? 'swiping' : '' }} {{ item._isLocked ? 'order-locked' : '' }}"
+        style="transform: translateX({{ item._offsetX || 0 }}rpx);"
+        bindtouchstart="onTouchStart"
+        bindtouchmove="onTouchMove"
+        bindtouchend="onTouchEnd"
+        data-id="{{ item.id }}"
+        bindtap="onOrderTap"
+      >
+        <view class="order-header">
+          <view class="order-no">
+            <text class="order-id">#{{ item.orderNo }}</text>
+            <text class="order-status {{ item.statusClass }}">{{ item.statusLabel }}</text>
+            <!-- 锁定标记 -->
+            <view wx:if="{{ item._isLocked }}" class="lock-tag">
+              <van-icon name="lock" size="22rpx" color="#999" />
+            </view>
+          </view>
+          <text class="order-time">{{ item.createTime }}</text>
+        </view>
+        <view class="order-body">
+          <view class="order-pkg">
+            <text class="pkg-spec">{{ item.spec }}</text>
+            <text class="pkg-point">{{ item._displayPickupPoint }}</text>
+          </view>
+          <text class="order-addr">{{ item._displayDeliveryAddr }}</text>
+        </view>
+        <view class="order-footer">
+          <view class="footer-left">
+            <text class="order-price">¥{{ item.price }}</text>
+            <!-- 待接单的别人订单：显示接单入口 -->
+            <text
+              wx:if="{{ item.status === 'waiting' && item.owner !== 'me' && item._isLocked }}"
+              class="accept-tip"
+            >点击接单</text>
+            <!-- 已查看过的：显示标识 -->
+            <text wx:if="{{ item._canView && activeTab === 'received' }}" class="viewed-tag">已接单</text>
+            <!-- 自己的订单等待中：可取消提示 -->
+            <text wx:if="{{ item.owner === 'me' && item.status === 'cancel' }}" class="canceled-tag">已取消</text>
+          </view>
+          <view class="order-actions" wx:if="{{ activeTab === 'all' || activeTab === 'my' }}">
+            <text class="action-btn" catchtap="onCopyOrder" data-id="{{ item.id }}">复制单号</text>
+          </view>
+        </view>
+      </view>
+      <!-- 左滑删除按钮（自己的订单可删） -->
+      <view
+        wx:if="{{ item.owner === 'me' }}"
+        class="order-delete"
+        catchtap="onDeleteOrder"
+        data-id="{{ item.id }}"
+      >
+        <van-icon name="delete-o" size="36rpx" color="#fff" />
+        <text>删除</text>
+      </view>
+      <!-- 左滑取消接单按钮（已接的他人订单，仅accepted状态） -->
+      <view
+        wx:if="{{ item.owner !== 'me' && item.status === 'accepted' && item._canView }}"
+        class="order-cancel-accept"
+        catchtap="onCancelAcceptedOrderSwipe"
+        data-id="{{ item.id }}"
+      >
+        <van-icon name="close" size="36rpx" color="#fff" />
+        <text>取消接单</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="empty-list" wx:if="{{ filteredOrders.length === 0 }}">
+    <van-icon name="orders-o" size="120rpx" color="#ddd" />
+    <text class="empty-text">{{ emptyText }}</text>
+  </view>
+</view>
+
+<!-- 底部浮动下单按钮 -->
+<view class="float-btn" bindtap="goToOrder" wx:if="{{ activeTab !== 'receive' }}">
+  <van-icon name="plus" size="40rpx" color="#fff" />
+  <text>快递代取</text>
+</view>
+
+
+<!-- ==================== 接单确认弹窗 ==================== -->
+<view class="accept-modal" wx:if="{{ showAcceptModal }}">
+  <view class="modal-mask" bindtap="closeAcceptModal"></view>
+  <view class="accept-sheet">
+    <view class="sheet-header">
+      <text class="sheet-title">确认接单</text>
+      <van-icon name="cross" size="36rpx" color="#999" bindtap="closeAcceptModal" />
+    </view>
+
+    <view class="sheet-body">
+      <!-- 订单概要 -->
+      <view class="accept-item">
+        <text class="accept-label">订单编号</text>
+        <text class="accept-value">#{{ acceptTarget.orderNo }}</text>
+      </view>
+      <view class="accept-item">
+        <text class="accept-label">包裹规格</text>
+        <text class="accept-value">{{ acceptTarget.spec }}</text>
+      </view>
+      <view class="accept-item">
+        <text class="accept-label">快递点</text>
+        <text class="accept-value">{{ acceptTarget._displayPickupPoint }}</text>
+      </view>
+      <view class="accept-item">
+        <text class="accept-label">取件码</text>
+        <text class="accept-value">{{ acceptTarget._displayPickupCode }}</text>
+      </view>
+      <view class="accept-item">
+        <text class="accept-label">送达地址</text>
+        <text class="accept-value">{{ acceptTarget._displayDeliveryAddr }}</text>
+      </view>
+      <view class="accept-item">
+        <text class="accept-label">发布时间</text>
+        <text class="accept-value">{{ acceptTarget.createTime }}</text>
+      </view>
+      <view class="accept-item">
+        <text class="accept-label">配送费用</text>
+        <text class="accept-value accept-price">¥{{ acceptTarget.price }}</text>
+      </view>
+    </view>
+
+    <view class="accept-note">
+      <van-icon name="info-o" size="28rpx" color="#f0ad4e" />
+      <text>接单后您将能看到取件码和完整地址信息</text>
+    </view>
+
+    <view class="sheet-footer">
+      <button class="accept-cancel" bindtap="closeAcceptModal">我再想想</button>
+      <button class="accept-confirm" bindtap="confirmAccept">确认接单</button>
+    </view>
+  </view>
+</view>
+
+
+<!-- ==================== 订单详情弹窗（自己发的/自己接的） ==================== -->
+<view class="detail-modal" wx:if="{{ showDetailModal }}">
+  <view class="modal-mask" bindtap="closeDetailModal"></view>
+  <view class="detail-sheet">
+    <view class="sheet-header">
+      <text class="sheet-title">订单详情</text>
+      <van-icon name="cross" size="36rpx" color="#999" bindtap="closeDetailModal" />
+    </view>
+
+    <!-- 状态条 -->
+    <view class="detail-status-bar {{ detailOrder.statusClass }}">
+      <van-icon
+        name="{{ detailOrder.status === 'waiting' ? 'clock-o' : (detailOrder.status === 'accepted' ? 'checked' : (detailOrder.status === 'done' ? 'passed' : 'logistics')) }}"
+        size="40rpx"
+      />
+      <text>{{ detailOrder.statusLabel }}</text>
+    </view>
+
+    <!-- 订单基本信息 -->
+    <view class="detail-section">
+      <view class="detail-item">
+        <text class="detail-label">订单编号</text>
+        <text class="detail-value">{{ detailOrder.orderNo }}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">包裹规格</text>
+        <text class="detail-value">{{ detailOrder.spec }}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">下单时间</text>
+        <text class="detail-value">{{ detailOrder.createTime }}</text>
+      </view>
+    </view>
+
+    <!-- 取件信息（仅本人/接单人可见） -->
+    <view class="detail-section" wx:if="{{ detailOrder._canView && detailOrder.packages }}">
+      <view class="group-title">
+        <van-icon name="location-o" size="32rpx" color="#367BFF" />
+        <text>取件信息</text>
+      </view>
+      <view wx:for="{{ detailOrder.packages }}" wx:key="number" class="pack-block">
+        <view class="pack-divider" wx:if="{{ index > 0 }}"></view>
+        <text class="pack-num">包裹{{ item.number }}</text>
+        <view class="detail-item">
+          <text class="detail-label">快递点</text>
+          <text class="detail-value">{{ item.pickupPoint }}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">取件码</text>
+          <text class="detail-value pickup-code">{{ item.pickupCode }}</text>
+        </view>
+        <view class="detail-item" wx:if="{{ item.trackingNo }}">
+          <text class="detail-label">快递单号</text>
+          <text class="detail-value">{{ item.trackingNo }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 配送信息 -->
+    <view class="detail-section">
+      <view class="group-title">
+        <van-icon name="flag-o" size="32rpx" color="#e67e22" />
+        <text>配送信息</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">送达地址</text>
+        <text class="detail-value addr-value">{{ detailOrder._displayDeliveryAddr }}</text>
+      </view>
+      <view class="detail-item" wx:if="{{ detailOrder.deliveryTime }}">
+        <text class="detail-label">预约时间</text>
+        <text class="detail-value">{{ detailOrder.deliveryTime }}</text>
+      </view>
+      <view class="detail-item" wx:if="{{ detailOrder.remark }}">
+        <text class="detail-label">备注</text>
+        <text class="detail-value">{{ detailOrder.remark }}</text>
+      </view>
+    </view>
+
+    <!-- 费用明细 -->
+    <view class="detail-section">
+      <view class="group-title">
+        <van-icon name="balance-o" size="32rpx" color="#e65454" />
+        <text>费用明细</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">基础运费</text>
+        <text class="detail-value">¥{{ detailOrder.basePrice || detailOrder.price }}</text>
+      </view>
+      <view class="detail-item" wx:if="{{ detailOrder.tipAmount > 0 }}">
+        <text class="detail-label">打赏</text>
+        <text class="detail-value">+¥{{ detailOrder.tipAmount }}</text>
+      </view>
+      <view class="detail-item detail-total">
+        <text class="detail-label">合计</text>
+        <text class="detail-value price-value">¥{{ detailOrder.price }}</text>
+      </view>
+    </view>
+
+    <view class="sheet-close-btn">
+      <!-- 自己发的订单(waiting/accepted)：可取消 -->
+      <view wx:if="{{ detailOrder.owner === 'me' && (detailOrder.status === 'waiting' || detailOrder.status === 'accepted') }}" class="detail-actions">
+        <button class="detail-cancel-my" bindtap="onCancelMyOrder">取消订单</button>
+        <button class="detail-close-half" bindtap="closeDetailModal">关闭</button>
+      </view>
+      <!-- 已接的他人订单(accepted)：可取消接单 -->
+      <view wx:elif="{{ detailOrder.owner !== 'me' && detailOrder.status === 'accepted' && detailOrder._canView }}" class="detail-actions">
+        <button class="detail-cancel-accept" bindtap="onCancelAcceptedOrder">取消接单</button>
+        <button class="detail-close-half" bindtap="closeDetailModal">关闭</button>
+      </view>
+      <!-- 其他状态：仅关闭 -->
+      <view wx:else>
+        <button class="detail-close" bindtap="closeDetailModal">关闭</button>
+      </view>
+    </view>
+  </view>
+</view>

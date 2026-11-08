@@ -1,0 +1,20 @@
+{
+  "name": "campus-app",
+  "version": "1.0.0",
+  "description": "拾刻校园通小程序",
+  "main": "app.js",
+  "scripts": {
+    "dev": "echo \"开发中...\"",
+    "build": "echo \"构建中...\""
+  },
+  "keywords": [
+    "wechat",
+    "miniprogram",
+    "campus"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@vant/weapp": "^1.11.7"
+  }
+}

@@ -1,0 +1,36 @@
+<view class="login-container">
+  <view class="header-section">
+    <text class="title">欢迎使用 拾刻校园通</text>
+  </view>
+
+  <view class="form-section">
+    <view class="input-group">
+      <view class="input-wrapper {{ accountFocus ? 'focused' : '' }}">
+        <input class="input-field" value="{{ account }}" placeholder="请输入账号" bindinput="onAccountChange" bindfocus="onAccountFocus" bindblur="onAccountBlur" />
+      </view>
+    </view>
+
+    <view class="input-group">
+      <view class="input-wrapper {{ passwordFocus ? 'focused' : '' }}">
+        <input class="input-field" value="{{ password }}" type="password" placeholder="请输入密码" bindinput="onPasswordChange" bindfocus="onPasswordFocus" bindblur="onPasswordBlur" />
+      </view>
+    </view>
+
+    <view class="agreement-section" bindtap="onAgreementToggle">
+      <checkbox value="" checked="{{ agreed }}" color="#367BFF" />
+      <text class="agreement-text">阅读并同意</text>
+      <text class="agreement-link" catchtap="openAgreement('user')">《用户协议》</text>
+      <text class="agreement-text">和</text>
+      <text class="agreement-link" catchtap="openAgreement('privacy')">《隐私协议》</text>
+    </view>
+
+    <button class="login-button" disabled="{{ !canLogin }}" bindtap="handleLogin">
+      登录
+    </button>
+
+    <view class="links-row">
+      <text class="register-link" catchtap="goRegister">注册账号</text>
+      <text class="forget-password" catchtap="forgetPassword">忘记密码</text>
+    </view>
+  </view>
+</view>
