@@ -2,17 +2,6 @@
 node_modules/
 miniprogram_npm/miniprogram_npm/
 
-# ===== 来源不明的原始图标素材：已从代码引用中移除，不纳入开源仓库 =====
-icons/
-
-# ===== 微信开发者工具私有配置（本地调试用，不公开）=====
-project.private.config.json
-
-# ===== 软件著作权登记材料：含著作权人署名与源码全文，不属于开源仓库 =====
-软著申请材料/
-*.docx
-*.pdf
-gen_soft_materials.py
 
 # ===== 本地凭据 / 环境文件 =====
 .env
@@ -26,4 +15,4 @@ Thumbs.db
 *.log
 .idea/
 .vscode/
-.codebuddy/
+
